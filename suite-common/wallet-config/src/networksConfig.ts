@@ -372,6 +372,7 @@ export const networks = {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
             token: 'https://explorer.blockfrost.dev/token/',
+            address: 'https://explorer.blockfrost.dev/account/',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
@@ -402,6 +403,7 @@ export const networks = {
             tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
             account: 'https://testnet-explorer.blockfrost.dev/account/',
             token: 'https://testnet-explorer.blockfrost.dev/token/',
+            address: 'https://testnet-explorer.blockfrost.dev/account/',
         },
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',

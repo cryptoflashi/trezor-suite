@@ -12,6 +12,7 @@ import { IOAddress } from '../../IOAddress';
 import { AnalyzeInBlockbookBanner } from './AnalyzeInBlockbookBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export const blurFix = css`
     margin-left: -10px;
@@ -152,7 +153,7 @@ const IOGridRow = ({
 }: IOGridRow) => {
     const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
 
-    const explorerTxUrl = useExplorerTxUrl();
+    const explorerTxUrl = useExplorerTxUrl(symbol);
 
     return (
         <GridItem isAccountOwned={isAccountOwned}>
@@ -216,7 +217,7 @@ interface GridRowGroupComponentProps {
 
 const GridRowGroupComponent = ({ from, to, symbol, amount }: GridRowGroupComponentProps) => {
     const theme = useTheme();
-    const explorerTxUrl = useExplorerTxUrl();
+    const explorerTxUrl = useExplorerTxUrl(symbol as NetworkSymbol);
 
     return (
         <RowGrid>
@@ -424,7 +425,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (network?.networkType === 'ethereum') {
         return (
             <Wrapper>
-                <AnalyzeInBlockbookBanner txid={tx.txid} />
+                <AnalyzeInBlockbookBanner txid={tx.txid} symbol={tx.symbol} />
                 <BalanceDetailsRow tx={tx} />
                 <EthereumSpecificBalanceDetailsRow tx={tx} />
             </Wrapper>
@@ -434,7 +435,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     if (tx.type === 'joint') {
         return (
             <Wrapper>
-                <AnalyzeInBlockbookBanner txid={tx.txid} />
+                <AnalyzeInBlockbookBanner txid={tx.txid} symbol={tx.symbol} />
                 <CollapsibleIOSection
                     heading={<Translation id="TR_MY_INPUTS_AND_OUTPUTS" />}
                     opened
@@ -454,7 +455,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
 
     return (
         <Wrapper>
-            <AnalyzeInBlockbookBanner txid={tx.txid} />
+            <AnalyzeInBlockbookBanner txid={tx.txid} symbol={tx.symbol} />
             <IOSectionColumn tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} />
         </Wrapper>
     );

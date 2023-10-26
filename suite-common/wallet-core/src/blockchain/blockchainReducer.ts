@@ -72,6 +72,19 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.account)
                     : network.explorer.account
             }`,
+            nft:
+                'nft' in network.explorer
+                    ? `${
+                          isHttp
+                              ? info.url + getBlockExplorerUrlSuffix(network.explorer.nft)
+                              : network.explorer.nft
+                      }`
+                    : undefined,
+            address: `${
+                isHttp
+                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.address)
+                    : network.explorer.address
+            }`,
         },
         connected: true,
         blockHash: info.blockHash,

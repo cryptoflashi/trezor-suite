@@ -36,6 +36,9 @@ export interface Blockchain {
     explorer: {
         tx: string;
         account: string;
+        nft?: string;
+        address: string;
+        token?: string;
     };
     connected: boolean;
     subscribed?: boolean;
