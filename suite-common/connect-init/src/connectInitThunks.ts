@@ -60,6 +60,7 @@ export const connectInitThunk = createThunk(
             'rippleGetAddress',
             'cardanoGetAddress',
             'solanaGetAddress',
+            'cardanoGetPublicKey',
             'applySettings',
             'changePin',
             'pushTransaction',
