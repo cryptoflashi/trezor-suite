@@ -1921,6 +1921,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@effect/schema@npm:0.50.0":
+  version: 0.50.0
+  resolution: "@effect/schema@npm:0.50.0"
+  peerDependencies:
+    effect: 2.0.0-next.56
+    fast-check: ^3.13.2
+  checksum: 8d55c45d5c07ff9d573a5b709850d5e972a3ed26af5ad8d469fb8bfac83f0682decffeb8ef93e50fc5988f943cbdc8bba6803922fba6d9a91b8944899ed50d35
+  languageName: node
+  linkType: hard
+
 "@egjs/hammerjs@npm:^2.0.17":
   version: 2.0.17
   resolution: "@egjs/hammerjs@npm:2.0.17"
@@ -2442,6 +2452,57 @@ __metadata:
     ethereum-cryptography: "npm:^2.0.0"
     micro-ftch: "npm:^0.3.1"
   checksum: cc35338932e49b15e54ca6e548b32a1f48eed7d7e1d34ee743e4d3600dd616668bd50f70139e86c5c35f55aac35fba3b6cc4e6f679cf650aeba66bf93016200c
+  languageName: node
+  linkType: hard
+
+"@evolu/common-react@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@evolu/common-react@npm:2.0.1"
+  peerDependencies:
+    "@evolu/common": ^2.0.0
+    "@types/react": ^18.2.22
+    react: ^18.2.0
+  checksum: e918f754dc93246ccebdd7a9509cd47a36a1d7c8f72801720d6891965e6c465024cd89a0baa7094253ad1acc995e7d10da4801d8a3a509e6118fa51f4e42994a
+  languageName: node
+  linkType: hard
+
+"@evolu/common-web@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@evolu/common-web@npm:2.0.0"
+  peerDependencies:
+    "@evolu/common": ^2.0.0
+    "@sqlite.org/sqlite-wasm": 3.43.2-build1
+  checksum: 8c90347c006ca3bef89ac2adcdfa7113a7fd94963b1c9d95801361ed2ddfaac0fecc2f10c16cf8ded4d6b0347d39c181ac9e8176abf3ae629a05aa362bf1de4d
+  languageName: node
+  linkType: hard
+
+"@evolu/common@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@evolu/common@npm:2.0.1"
+  dependencies:
+    "@noble/ciphers": "npm:^0.4.0"
+    "@noble/hashes": "npm:^1.3.2"
+    "@protobuf-ts/runtime": "npm:^2.9.1"
+    "@scure/bip39": "npm:^1.2.1"
+    kysely: "npm:^0.26.3"
+    nanoid: "npm:^5.0.3"
+  peerDependencies:
+    "@effect/schema": 0.50.0
+    effect: 2.0.0-next.56
+  checksum: 81004028e57a92a12123c84ed2e88c5d133698bf5db6e16f2183fd8846fc280838e2d6f898b3eadf43e6b157ef432375c9132bd804a804b7b117831751d537e5
+  languageName: node
+  linkType: hard
+
+"@evolu/react@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@evolu/react@npm:2.0.7"
+  peerDependencies:
+    "@evolu/common": ^2.0.0
+    "@evolu/common-react": ^2.0.0
+    "@evolu/common-web": ^2.0.0
+    "@types/react-dom": ^18.2.7
+    react-dom: ^18.2.0
+  checksum: 681f265324a88952b6bc3fa7c1de7a666da807972d35022b3c675ed2e22a9193dc252702f58e84e4f7d5ec3e99e2e76009ace1bb4e7441bb6429cb6afa86a1bc
   languageName: node
   linkType: hard
 
@@ -4061,6 +4122,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/ciphers@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@noble/ciphers@npm:0.4.0"
+  checksum: 6bb476c9bf9ea3eae989f66249b8999bcd8b050814b8f2c34b14792d7887f5fa870dd3b74a2f26348cb65d41b1f598ad8248e2fb06a0888a6c0fb5599283f4d5
+  languageName: node
+  linkType: hard
+
 "@noble/curves@npm:1.1.0, @noble/curves@npm:~1.1.0":
   version: 1.1.0
   resolution: "@noble/curves@npm:1.1.0"
@@ -4086,7 +4154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.3.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:~1.3.0, @noble/hashes@npm:~1.3.1":
+"@noble/hashes@npm:1.3.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:~1.3.0, @noble/hashes@npm:~1.3.1":
   version: 1.3.2
   resolution: "@noble/hashes@npm:1.3.2"
   checksum: 685f59d2d44d88e738114b71011d343a9f7dce9dfb0a121f1489132f9247baa60bc985e5ec6f3213d114fbd1e1168e7294644e46cbd0ce2eba37994f28eeb51b
@@ -4351,6 +4419,13 @@ __metadata:
   version: 2.11.6
   resolution: "@popperjs/core@npm:2.11.6"
   checksum: 37f5b021d993ae5ad3c3913d6d9b1ab506912b91756ba3ca87bcc0e727b9fd9e1f4c6cf2675aac608aa856c7c5475842df4240770052d6104967c5c6473da7b9
+  languageName: node
+  linkType: hard
+
+"@protobuf-ts/runtime@npm:^2.9.1":
+  version: 2.9.1
+  resolution: "@protobuf-ts/runtime@npm:2.9.1"
+  checksum: b07664d251cf4a93df4da7bdf507e1901ad3cecf4b351073158d26671f5dba3597eee6d4fdebcd2575afb32c0bc4d33dbbbb774a58bbc617eb58adf6bf1f018b
   languageName: node
   linkType: hard
 
@@ -5404,7 +5479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.2.1":
+"@scure/bip39@npm:1.2.1, @scure/bip39@npm:^1.2.1":
   version: 1.2.1
   resolution: "@scure/bip39@npm:1.2.1"
   dependencies:
@@ -5920,6 +5995,15 @@ __metadata:
     rpc-websockets: "npm:^7.5.1"
     superstruct: "npm:^0.14.2"
   checksum: 2728ad965521d1cd49e46ccf27248668e3027e1b463283cc8b78c29a3f3b2675374f3c9517aab840a60e61fcb09e122892345813cc1ccbee9825376b2be227e3
+  languageName: node
+  linkType: hard
+
+"@sqlite.org/sqlite-wasm@npm:3.43.2-build1":
+  version: 3.43.2-build1
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.43.2-build1"
+  bin:
+    sqlite-wasm: bin/index.js
+  checksum: 855471a57857ade7567dbbcf6bf3a579d15f6b3260068b88a5c82fdb6767011425ecae88b27387edee508ac0ff61f8a6346f9e3cc92c99ec6df39edb415883de
   languageName: node
   linkType: hard
 
@@ -9412,11 +9496,17 @@ __metadata:
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
     "@crowdin/cli": "npm:^3.15.0"
+    "@effect/schema": "npm:0.50.0"
+    "@evolu/common": "npm:^2.0.1"
+    "@evolu/common-react": "npm:^2.0.1"
+    "@evolu/common-web": "npm:^2.0.0"
+    "@evolu/react": "npm:^2.0.7"
     "@formatjs/cli": "npm:^6.2.1"
     "@formatjs/intl": "npm:2.9.6"
     "@hookform/resolvers": "npm:3.1.0"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/core": "npm:^7.77.0"
+    "@sqlite.org/sqlite-wasm": "npm:3.43.2-build1"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
@@ -9483,6 +9573,7 @@ __metadata:
     bs58check: "npm:^3.0.1"
     date-fns: "npm:^2.30.0"
     dropbox: "npm:^10.34.0"
+    effect: "npm:2.0.0-next.56"
     file-saver: "npm:^2.0.5"
     framer-motion: "npm:^10.16.4"
     history: "npm:^4.10.1"
@@ -16744,6 +16835,13 @@ __metadata:
   version: 1.1.1
   resolution: "ee-first@npm:1.1.1"
   checksum: 1b4cac778d64ce3b582a7e26b218afe07e207a0f9bfe13cc7395a6d307849cfe361e65033c3251e00c27dd060cab43014c2d6b2647676135e18b77d2d05b3f4f
+  languageName: node
+  linkType: hard
+
+"effect@npm:2.0.0-next.56":
+  version: 2.0.0-next.56
+  resolution: "effect@npm:2.0.0-next.56"
+  checksum: dbeb7363152161f90e6a13bf04a2f1b7f593fc01701fcdeafcc8d5756f99769efa2341f0ff67e289ce2f577c74fe7b70d95d115b2c61c109e79fee9e591ea520
   languageName: node
   linkType: hard
 
@@ -24145,6 +24243,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely@npm:^0.26.3":
+  version: 0.26.3
+  resolution: "kysely@npm:0.26.3"
+  checksum: 334f9cb49e0a21b043a156d2e956cfe35ec8b83b90b0ca32b919d449d4e80b03f4e8509ff2af4c5ad5524efc94881f3f8d0c510a841dcdb1fcafdff5e2189411
+  languageName: node
+  linkType: hard
+
 "language-subtag-registry@npm:^0.3.20":
   version: 0.3.22
   resolution: "language-subtag-registry@npm:0.3.22"
@@ -26363,6 +26468,15 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 67235c39d1bc05851383dadde5cf77ae1c90c2a1d189e845c7f20f646f0488d875ad5f5226bbba072a88cebbb085a3f784a6673117daf785bdf614a852550362
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "nanoid@npm:5.0.3"
+  bin:
+    nanoid: bin/nanoid.js
+  checksum: 419f083464f91e148fa8f313d898e3271b2c148aa711d37c6251e5689b119d2e3ac766d5fa26e53214896969e9e9c6ccbce7af679c966d24490b1b5df94ffb5d
   languageName: node
   linkType: hard
 
