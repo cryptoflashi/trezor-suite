@@ -27,6 +27,7 @@ import {
 import { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import * as modalActions from 'src/actions/suite/modalActions';
+import EvoluProvider from 'src/services/suite/metadata/EvoluProvider';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
@@ -78,7 +79,12 @@ export type MetadataAction =
     | ReturnType<typeof setAccountAdd>;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
-let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
+let providerInstance:
+    | DropboxProvider
+    | GoogleProvider
+    | FileSystemProvider
+    | EvoluProvider
+    | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProviderInstance = (
@@ -96,6 +102,8 @@ const createProviderInstance = (
             return new GoogleProvider(tokens, environment);
         case 'fileSystem':
             return new FileSystemProvider();
+        case 'evolu':
+            return new EvoluProvider();
         default:
             throw new Error(`provider of type ${type} is not implemented`);
     }

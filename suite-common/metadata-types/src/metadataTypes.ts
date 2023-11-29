@@ -50,7 +50,7 @@ export type MetadataAddPayload =
 // }
 export type MetadataItem = string;
 
-export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard';
+export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | 'evolu';
 
 export type Tokens = {
     accessToken?: string;
