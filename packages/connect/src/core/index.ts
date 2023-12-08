@@ -343,7 +343,7 @@ const onCall = async (message: IFrameCallMessage) => {
 
     if (!_deviceList && !DataManager.getSettings('transportReconnect')) {
         // transport is missing try to initialize it once again
-        await initTransport(DataManager.getSettings());
+        await initDeviceList(false);
     }
 
     if (method.isManagementRestricted()) {
@@ -914,11 +914,11 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
 
 /**
  * Start DeviceList with listeners.
- * @param {ConnectSettings} settings
+ * @param {boolean} transportReconnect
  * @returns {Promise<void>}
  * @memberof Core
  */
-const initDeviceList = async (settings: ConnectSettings) => {
+const initDeviceList = async (transportReconnect?: boolean) => {
     try {
         _deviceList = new DeviceList();
 
@@ -953,11 +953,11 @@ const initDeviceList = async (settings: ConnectSettings) => {
 
             postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             // if transport fails during app lifetime, try to reconnect
-            if (settings.transportReconnect) {
+            if (transportReconnect) {
                 const { promise, timeout } = resolveAfter(1000, null);
                 _deviceListInitTimeout = timeout;
                 promise.then(() => {
-                    initDeviceList(settings);
+                    initDeviceList(transportReconnect);
                 });
             }
         });
@@ -973,14 +973,14 @@ const initDeviceList = async (settings: ConnectSettings) => {
     } catch (error) {
         _deviceList = undefined;
         postMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-        if (!settings.transportReconnect) {
+        if (!transportReconnect) {
             throw error;
         } else {
             const { promise, timeout } = resolveAfter(3000, null);
             _deviceListInitTimeout = timeout;
             await promise;
             // try to reconnect
-            await initDeviceList(settings);
+            await initDeviceList(transportReconnect);
         }
     }
 };
@@ -1038,6 +1038,7 @@ export class Core extends EventEmitter {
  */
 export const initCore = async (
     settings: ConnectSettings,
+    onCoreEvent: (message: CoreEventMessage) => void,
     logWriterFactory?: () => LogWriter | undefined,
 ) => {
     if (logWriterFactory) {
@@ -1053,27 +1054,27 @@ export const initCore = async (
             settings.popup ? settings.interactionTimeout : 0,
         );
 
-        return _core;
+        _core.on(CORE_EVENT, onCoreEvent);
     } catch (error) {
         // TODO: kill app
         _log.error('init', error);
         throw error;
     }
-};
 
-export const initTransport = async (settings: ConnectSettings) => {
     try {
-        if (!settings.transportReconnect) {
+        if (!DataManager.getSettings('transportReconnect')) {
             // try only once, if it fails kill and throw initialization error
-            await initDeviceList(settings);
+            await initDeviceList(false);
         } else {
             // don't wait for DeviceList result, further communication will be thru TRANSPORT events
-            initDeviceList(settings);
+            initDeviceList(true);
         }
     } catch (error) {
         _log.error('initTransport', error);
         throw error;
     }
+
+    return _core;
 };
 
 const disableWebUSBTransport = async () => {
@@ -1098,7 +1099,7 @@ const disableWebUSBTransport = async () => {
         // disconnect previous device list
         await _deviceList.dispose();
         // and init with new settings, without webusb
-        await initDeviceList(settings);
+        await initDeviceList(settings.transportReconnect);
     } catch (error) {
         // do nothing
     }
