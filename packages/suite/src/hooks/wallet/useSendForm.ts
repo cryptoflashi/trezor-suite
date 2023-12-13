@@ -212,7 +212,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     }, [dispatch, props, setComposedLevels]);
 
     // declare useSendFormImport, sub-hook of useSendForm
-    const { importTransaction } = useSendFormImport({
+    const { importTransaction, validateImportedTransaction } = useSendFormImport({
         network: state.network,
         tokens: state.account.tokens,
         fiatRates: state.fiatRates,
@@ -227,10 +227,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         // keepDefaultValues will set `isDirty` flag to true
         reset(values, { keepDefaultValues: true });
         setLoading(false);
-        const valid = await trigger();
-        if (valid) {
-            composeRequest();
-        }
+        validateImportedTransaction(async () => {
+            const valid = await trigger();
+            if (valid) {
+                composeRequest();
+            }
+        });
     };
 
     // get response from TransactionReviewModal
