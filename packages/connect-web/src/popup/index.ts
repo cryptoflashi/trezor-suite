@@ -7,8 +7,8 @@ import {
     IFRAME,
     UI,
     ConnectSettings,
-    CoreMessage,
     IFrameLoaded,
+    CoreResponse,
 } from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
@@ -336,7 +336,7 @@ export class PopupManager extends EventEmitter {
         this.popupWindow = null;
     }
 
-    async postMessage(message: CoreMessage) {
+    async postMessage(message: CoreResponse) {
         // device needs interaction but there is no popup/ui
         // maybe popup request wasn't handled
         // ignore "ui_request_window" type

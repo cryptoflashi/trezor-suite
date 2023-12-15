@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 // import { EventType } from '@trezor/connect-analytics';
-import { CoreMessage, PostMessage, UI_REQUEST } from '../events';
+import { CoreResponse, PostMessage, UI_REQUEST } from '../events';
 import type { Device } from '../types';
 
 // TODO: imho this belongs somewhere to packages/connect-iframe package.
@@ -9,7 +9,7 @@ import type { Device } from '../types';
 // release 2 new packages to npm which is unjustifiable burden
 export const enhancePostMessageWithAnalytics = (
     callback: PostMessage,
-    message: CoreMessage,
+    message: CoreResponse,
     data: { device?: Device },
 ) => {
     switch (message.type) {

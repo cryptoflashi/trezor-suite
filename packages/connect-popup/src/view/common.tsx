@@ -1,6 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/common.js
 
-import { POPUP, ERRORS, PopupInit, CoreMessage, createUiResponse } from '@trezor/connect';
+import {
+    POPUP,
+    ERRORS,
+    PopupInit,
+    createUiResponse,
+    CoreRequest,
+    CoreResponse,
+} from '@trezor/connect';
 import { createRoot } from 'react-dom/client';
 
 import { ConnectUI, State } from '@trezor/connect-ui';
@@ -166,7 +173,7 @@ export const initMessageChannelWithIframe = async (
 };
 
 // this method can be used from anywhere
-export const postMessage = (message: CoreMessage) => {
+export const postMessage = (message: CoreRequest) => {
     const { broadcast, iframe, core } = getState();
     if (core) {
         core.handleMessage(message);
@@ -183,7 +190,7 @@ export const postMessage = (message: CoreMessage) => {
     throw ERRORS.TypedError('Popup_ConnectionMissing');
 };
 
-export const postMessageToParent = (message: CoreMessage) => {
+export const postMessageToParent = (message: CoreResponse) => {
     if (window.opener) {
         // post message to parent and wait for POPUP.INIT message
         window.opener.postMessage(message, '*');
