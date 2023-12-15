@@ -11,7 +11,7 @@ import {
     CallMethodResponse,
     UiRequestButtonData,
     UiPromiseCreator,
-    PostMessage,
+    CoreEventMessage,
 } from '../events';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
@@ -90,7 +90,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     // callbacks
     // @ts-expect-error: strictPropertyInitialization
-    postMessage: PostMessage;
+    postMessage: (message: CoreEventMessage) => void;
     // @ts-expect-error: strictPropertyInitialization
     getPopupPromise: () => Deferred<void>;
     // @ts-expect-error: strictPropertyInitialization

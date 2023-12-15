@@ -1,7 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/builder.js
 
 import { createDeferred, Deferred } from '@trezor/utils';
-import { IFRAME, UI_EVENT, ERRORS, ConnectSettings } from '@trezor/connect/lib/exports';
+import {
+    IFRAME,
+    ERRORS,
+    ConnectSettings,
+    CoreRequestMessage,
+    IFrameCallMessage,
+} from '@trezor/connect/lib/exports';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
 import { setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
 import css from './inlineStyles';
@@ -172,22 +178,25 @@ export const init = async (settings: ConnectSettings) => {
     }
 };
 
-// post messages to iframe
-export const postMessage = (message: any, usePromise = true) => {
+export const postMessage = (message: CoreRequestMessage) => {
     if (!instance) {
         throw ERRORS.TypedError('Init_IframeBlocked');
     }
-    if (usePromise) {
-        _messageID++;
-        message.id = _messageID;
-        messagePromises[_messageID] = createDeferred();
-        const { promise } = messagePromises[_messageID];
-        instance.contentWindow?.postMessage(message, origin);
-        return promise;
+    instance.contentWindow?.postMessage(message, origin);
+};
+
+// post messages to iframe
+export const postMessageAsync = (message: Omit<IFrameCallMessage, 'id'>) => {
+    if (!instance) {
+        throw ERRORS.TypedError('Init_IframeBlocked');
     }
 
-    instance.contentWindow?.postMessage(message, origin);
-    return null;
+    _messageID++;
+    const id = _messageID;
+    messagePromises[_messageID] = createDeferred();
+    const { promise } = messagePromises[_messageID];
+    instance.contentWindow?.postMessage({ id, ...message }, origin);
+    return promise;
 };
 
 export const clearTimeout = () => {
@@ -198,7 +207,6 @@ export const initIframeLogger = () => {
     const logWriterFactory = (): LogWriter => ({
         add: (message: LogMessage) => {
             postMessage({
-                event: UI_EVENT,
                 type: IFRAME.LOG,
                 payload: message,
             });
