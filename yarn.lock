@@ -9049,6 +9049,7 @@ __metadata:
     "@trezor/node-utils": "workspace:*"
     "@trezor/request-manager": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
+    "@trezor/transport": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"

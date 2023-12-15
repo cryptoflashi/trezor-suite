@@ -22,6 +22,7 @@ import * as theme from './theme';
 import * as httpReceiverModule from './http-receiver';
 import * as metadata from './metadata';
 import * as bridge from './bridge';
+import * as bridgeNode from './bridge-node';
 import * as customProtocols from './custom-protocols';
 import * as autoUpdater from './auto-updater';
 import * as store from './store';
@@ -52,6 +53,7 @@ const MODULES = [
     httpReceiverModule,
     metadata,
     bridge,
+    bridgeNode,
     customProtocols,
     autoUpdater,
     store,
@@ -61,6 +63,7 @@ const MODULES = [
     devTools,
     requestInterceptor,
     coinjoin,
+
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];
