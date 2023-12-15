@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "target": "esnext",
+        "module": "commonjs"
+    },
+    "references": [{ "path": "../transport" }],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
+}
