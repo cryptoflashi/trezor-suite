@@ -17,16 +17,11 @@ import { useOnClickOutside } from '@trezor/react-utils';
 import { Icon } from '../assets/Icon/Icon';
 import { Menu, MenuProps, DropdownMenuItemProps } from './Menu';
 import { Coords, getAdjustedCoords } from './getAdjustedCoords';
+import { IconButton } from '../buttons/IconButton/IconButton';
 
-const MoreIcon = styled(Icon)<{ $isDisabled?: boolean; isToggled: boolean }>`
-    background: ${({ $isDisabled, isToggled, theme }) =>
-        !$isDisabled && isToggled && theme.backgroundNeutralSubdued};
-    border-radius: ${borders.radii.xxs};
-    transition: background 0.2s;
-
-    :hover {
-        background: ${({ $isDisabled, theme }) => !$isDisabled && theme.backgroundNeutralSubdued};
-    }
+const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
+    background: ${({ isDisabled, $isToggled, theme }) =>
+        !isDisabled && $isToggled && theme.backgroundNeutralSubdued};
 `;
 
 const Container = styled.button<{ disabled?: boolean }>`
@@ -186,11 +181,11 @@ export const Dropdown = forwardRef(
             })
         ) : (
             <MoreIcon
-                isToggled={isToggled}
-                size={24}
+                size="small"
+                variant="tertiary"
                 icon="MORE"
-                color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
-                $isDisabled={isDisabled}
+                $isToggled={isToggled}
+                isDisabled={isDisabled}
                 {...rest}
             />
         );
