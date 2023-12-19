@@ -9,6 +9,7 @@ import {
     Icon,
     Dropdown,
     DropdownMenuItemProps,
+    ButtonGroup,
 } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
@@ -151,13 +152,6 @@ const Text = styled.div`
 
 const StyledIcon = styled(Icon)`
     margin-right: 10px;
-`;
-
-const StyledButton = styled(Button)`
-    font-size: ${FONT_SIZE.NORMAL};
-    font-weight: ${FONT_WEIGHT.DEMI_BOLD};
-    padding-left: 20px;
-    padding-right: 20px;
 `;
 
 export type AppNavigationItem = {
@@ -319,27 +313,31 @@ export const AppNavigation = ({ items, primaryContent, inView }: AppNavigationPr
                                 </AppNavigationTooltip>
                             )}
                             <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
-                                {itemsSecondaryWithoutExtra.map(item => {
-                                    const { id, title } = item;
-                                    return (
-                                        <AppNavigationTooltip key={id}>
-                                            <StyledButton
-                                                variant={
-                                                    id === 'wallet-coinmarket-buy'
-                                                        ? 'primary'
-                                                        : 'secondary'
-                                                }
-                                                onClick={item.callback}
-                                                {...(item['data-test'] && {
-                                                    'data-test': item['data-test'],
-                                                })}
-                                                isDisabled={isAccountLoading}
-                                            >
-                                                <Text>{title}</Text>
-                                            </StyledButton>
-                                        </AppNavigationTooltip>
-                                    );
-                                })}
+                                <AppNavigationTooltip>
+                                    <ButtonGroup size="small" isDisabled={isAccountLoading}>
+                                        {itemsSecondaryWithoutExtra.map(item => {
+                                            const { id, title, icon } = item;
+                                            return (
+                                                <Button
+                                                    icon={icon}
+                                                    key={id}
+                                                    onClick={item.callback}
+                                                    {...(item['data-test'] && {
+                                                        'data-test': item['data-test'],
+                                                    })}
+                                                    variant={
+                                                        id === 'wallet-coinmarket-buy'
+                                                            ? 'primary'
+                                                            : 'secondary'
+                                                    }
+                                                >
+                                                    <Text>{title}</Text>
+                                                </Button>
+                                            );
+                                        })}
+                                    </ButtonGroup>
+                                </AppNavigationTooltip>
+
                                 {!!itemsSecondaryWithExtra.length && (
                                     <AppNavigationTooltip>
                                         <Dropdown

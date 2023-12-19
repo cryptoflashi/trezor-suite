@@ -83,6 +83,7 @@ export const AccountNavigation = ({
                 goToWithAnalytics('wallet-send', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_SEND" />,
+            icon: 'SEND',
             position: 'secondary',
             isHidden: false,
         },
@@ -92,6 +93,7 @@ export const AccountNavigation = ({
                 goToWithAnalytics('wallet-receive', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_RECEIVE" />,
+            icon: 'RECEIVE',
             position: 'secondary',
             isHidden: false,
         },
@@ -101,6 +103,7 @@ export const AccountNavigation = ({
                 goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TRADE" />,
+            icon: 'REFRESH',
             position: 'secondary',
             isHidden: ['coinjoin'].includes(accountType),
         },
