@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
+// import { createWorkerProxy } from '@trezor/worker-proxy';
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
 import * as ACTIONS from './index';
@@ -34,6 +35,7 @@ export const onConnectOptionChange = (option: string, value: any) => ({
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
+        console.log('init in trezorConnectActions connect explorer');
         window.TrezorConnect = TrezorConnect;
 
         TrezorConnect.on(DEVICE_EVENT, event => {
@@ -72,11 +74,13 @@ export const init =
             lazyLoad: true,
             manifest: {
                 email: 'info@trezor.io',
-                appUrl: '@trezor/suite',
+                appUrl: '@trezor/test',
             },
             trustedHost: false,
             ...options,
         };
+
+        console.log('connectOptions', connectOptions);
 
         try {
             await TrezorConnect.init(connectOptions);

@@ -198,8 +198,10 @@ const handleResponseEvent = (data: any) => {
  * receive initial configuration from npm package
  */
 const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) => {
+    console.log('popup - handleInitMessage');
     const { data } = event;
     if (!data) return;
+    console.log('data.type', data.type);
 
     // case of webextension which uses cross origin communication via content script
     if (data.type === POPUP.CONTENT_SCRIPT_LOADED) {
@@ -228,6 +230,7 @@ const handleMessageInIframeMode = (
         | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
     >,
 ) => {
+    console.log('handleMessageInIframeMode');
     const { data } = event;
 
     if (!data) return;
@@ -284,6 +287,7 @@ const handleMessageInCoreMode = (
         | (Omit<MethodResponseMessage, 'payload'> & { payload?: { error: string; code?: string } })
     >,
 ) => {
+    console.log('handleMessageInCoreMode');
     const { data } = event;
 
     if (!data) return;
@@ -341,6 +345,8 @@ const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
 
 // handle POPUP.INIT message from window.opener
 const init = async (payload: PopupInit['payload']) => {
+    console.log('init in popup');
+    console.log('payload', payload);
     log.debug('popup init', payload);
 
     if (!payload) return;
@@ -352,6 +358,7 @@ const init = async (payload: PopupInit['payload']) => {
         }
 
         const isBrowserSupported = await view.initBrowserView(payload.systemInfo);
+        console.log('isBrowserSupported', isBrowserSupported);
         log.debug('browser supported: ', isBrowserSupported);
         if (!isBrowserSupported) {
             return;
@@ -384,6 +391,8 @@ const initCoreInPopup = async (
     payload: PopupInit['payload'],
     logWriterFactory?: () => LogWriter | undefined,
 ) => {
+    console.log('initCoreInPopup');
+    console.log('payload', payload);
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
@@ -405,6 +414,7 @@ const initCoreInPopup = async (
     if (disposed) return;
 
     // init core
+    console.log('init core');
     log.debug('initiating core with settings: ', payload.settings);
     reactEventBus.dispatch({ type: 'loading', message: 'initiating core' });
     const core: Core = await initCore(
@@ -438,6 +448,7 @@ const initCoreInPopup = async (
 };
 
 const initCoreInIframe = async (payload: PopupInit['payload']) => {
+    console.log('initCoreInIframe', initCoreInIframe);
     reactEventBus.dispatch({ type: 'loading', message: 'waiting for iframe init' });
     await initMessageChannelWithIframe(payload, handleMessageInIframeMode);
     // done, popup is ready to handle incoming messages, waiting for handshake from iframe
@@ -445,7 +456,9 @@ const initCoreInIframe = async (payload: PopupInit['payload']) => {
 
 // handle POPUP.HANDSHAKE message from iframe or npm-client
 const handshake = (handshake: PopupHandshake, origin: string) => {
+    console.log('handshake');
     const { payload } = handshake;
+    console.log('payload', payload);
     log.debug('handshake with origin: ', origin, 'payload: ', payload);
 
     if (!payload) return;
@@ -461,6 +474,7 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
     // when this message comes from iframe, settings is already validated.
     // when there is no iframe, we must validate it here
     const trustedSettings = parseConnectSettings(payload.settings, thirdPartyOrigin);
+    console.log('trustedSettings', trustedSettings);
     setState({ settings: trustedSettings });
 
     if (isPhishingDomain(trustedSettings.origin || '')) {
@@ -472,6 +486,8 @@ const handshake = (handshake: PopupHandshake, origin: string) => {
         core.handleMessage(handshake);
     }
     reactEventBus.dispatch({ type: 'state-update', payload: handshake.payload });
+
+    console.log('handshake done');
 
     log.debug('handshake done');
 };

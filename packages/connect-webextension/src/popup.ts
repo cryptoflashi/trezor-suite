@@ -7,8 +7,23 @@ import { Log } from '@trezor/connect/lib/utils/debug';
 
 import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
 
+export const checkIfTabExists = (tabId: number | undefined) =>
+    new Promise(resolve => {
+        if (!tabId) return resolve(false);
+        function callback(tab: any) {
+            if (chrome.runtime.lastError) {
+                resolve(false);
+            } else {
+                // Tab exists
+                console.log('tab in checkIfTabExists', tab);
+                resolve(true);
+            }
+        }
+        chrome.tabs.get(tabId, callback);
+    });
+
 export class PopupManager extends EventEmitter {
-    popupWindow: chrome.tabs.Tab | undefined;
+    popupWindow: chrome.tabs.Tab | null = null;
 
     settings: ConnectSettings;
 
@@ -39,6 +54,10 @@ export class PopupManager extends EventEmitter {
     }
 
     request() {
+        console.log('request');
+        console.log('this.popupWindow', this.popupWindow);
+
+        console.log('this.locked', this.locked);
         // popup request
         // bring popup window to front
         if (this.locked) {
@@ -52,6 +71,7 @@ export class PopupManager extends EventEmitter {
         // we close it so we can open a new one.
         // This is necessary when popup window is in error state and we want to open a new one.
         if (this.popupWindow && !this.locked) {
+            console.log('now we should be closing it');
             this.close();
         }
 
@@ -67,10 +87,13 @@ export class PopupManager extends EventEmitter {
 
     // create a special content script to be injected into log.html and stop sending logs over popup
     open() {
+        console.log('open in PopupManager');
         const url = `${this.settings.popupSrc}`;
         chrome.windows.getCurrent(currentWindow => {
+            console.log('currentWindow', currentWindow);
             this.logger.debug('opening popup. currentWindow: ', currentWindow);
 
+            console.log('currentWindow.type ', currentWindow.type);
             // Request coming from extension popup,
             // create new window above instead of opening new tab
             if (currentWindow.type !== 'normal') {
@@ -95,15 +118,21 @@ export class PopupManager extends EventEmitter {
                         active: true,
                     },
                     tabs => {
+                        console.log('tabs', tabs);
                         this.extensionTabId = tabs[0].id as number;
+                        console.log('this.extensionTabId', this.extensionTabId);
 
+                        console.log('before create');
+                        console.log('url', url);
                         chrome.tabs.create(
                             {
                                 url,
                                 index: tabs[0].index + 1,
                             },
                             tab => {
+                                console.log('tab', tab);
                                 this.popupWindow = tab;
+                                console.log('before injecting');
                                 this.injectContentScript(tab.id!);
                             },
                         );
@@ -114,6 +143,8 @@ export class PopupManager extends EventEmitter {
     }
 
     private injectContentScript = (tabId: number) => {
+        console.log('injectContentScript');
+        console.log('tabId', tabId);
         chrome.scripting
             .executeScript({
                 target: { tabId },
@@ -127,7 +158,7 @@ export class PopupManager extends EventEmitter {
     };
 
     clear(focus = true) {
-        this.locked = false;
+        this.unlock();
 
         if (this.channel) {
             this.channel.disconnect();
@@ -142,6 +173,8 @@ export class PopupManager extends EventEmitter {
     }
 
     close() {
+        console.log('closing popup');
+        console.log('this.popupWindow.id', this.popupWindow?.id);
         if (!this.popupWindow?.id) return;
 
         this.logger.debug('closing popup', this.popupWindow.id);
@@ -155,5 +188,7 @@ export class PopupManager extends EventEmitter {
                 this.logger.error('closed with error', e);
             }
         });
+        console.log('making popupWindow null  !!!!');
+        this.popupWindow = null;
     }
 }

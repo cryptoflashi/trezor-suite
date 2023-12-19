@@ -68,11 +68,12 @@ const cancel = (error?: string) => {
     }
 };
 
-const handshakePromise = createDeferred();
+let handshakePromise = createDeferred();
 
 const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
-    logger.debug('initiating');
+    console.log('############### init  #################');
     _settings = parseConnectSettings({ ..._settings, ...settings });
+    console.log('_popupManager', _popupManager);
     if (!_popupManager) {
         _popupManager = new popup.PopupManager(_settings, { logger: popupManagerLogger });
         setLogWriter(() => logWriterFactory(_popupManager));
@@ -90,7 +91,9 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     }
 
     _popupManager.channel.on('message', message => {
+        console.log('message from _popupManager.channel', message);
         if (message.type === POPUP.CORE_LOADED) {
+            console.log('message type POPUP.CORE_LOADED');
             _popupManager.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
@@ -112,12 +115,15 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
  */
 const call: CallMethod = async params => {
     logger.debug('call', params);
+    console.log('############### call in connect-webextension  #################');
 
+    console.log('_settings.popup', _settings.popup);
     // request popup window it might be used in the future
     if (_settings.popup) {
         _popupManager.request();
     }
 
+    console.log('before _popupManager.channel.init');
     await _popupManager.channel.init();
     _popupManager.channel.postMessage({
         type: POPUP.INIT,
@@ -127,18 +133,26 @@ const call: CallMethod = async params => {
         },
     });
 
+    console.log('before  handshakePromise.promise');
     await handshakePromise.promise;
 
     // post message to core in popup
     try {
+        console.log('before _popupManager.channel.postMessage');
         const response = await _popupManager.channel.postMessage({
             type: IFRAME.CALL,
             payload: params,
         });
+        console.log('response', response);
 
         logger.debug('call: response: ', response);
 
         if (response) {
+            if (_popupManager) {
+                _popupManager.clear();
+                handshakePromise = createDeferred();
+            }
+
             return response;
         }
 

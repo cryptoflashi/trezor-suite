@@ -47,6 +47,9 @@ const removeDevice = (state: ConnectState, device: TrezorConnectDevice): Connect
 };
 
 const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): ConnectState => {
+    console.log('onOptionChange');
+    console.log('field', field);
+    console.log('value', value);
     const newState = {
         ...state,
     };
