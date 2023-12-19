@@ -29,6 +29,7 @@ const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 export class UsbApi extends AbstractApi {
     devices: TransportInterfaceDevice[] = [];
     usbInterface: ConstructorParams['usbInterface'];
+    pathPrefix = 'usb' as const;
 
     constructor({ usbInterface, logger }: ConstructorParams) {
         super({ logger });
@@ -43,7 +44,7 @@ export class UsbApi extends AbstractApi {
             this.devices = [...this.devices, ...this.createDevices([event.device])];
             this.emit(
                 'transport-interface-change',
-                this.devices.map(d => d.path),
+                this.devices.map(d => `${this.pathPrefix}-${d.path}`),
             );
         };
 
@@ -84,7 +85,7 @@ export class UsbApi extends AbstractApi {
             }
             this.devices = this.createDevices(nonHidDevices);
 
-            return this.success(this.devices.map(d => d.path));
+            return this.success(this.devices.map(d => `${this.pathPrefix}-${d.path}`));
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err, []);

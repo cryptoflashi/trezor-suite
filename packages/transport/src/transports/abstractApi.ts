@@ -23,8 +23,8 @@ interface ConstructorParams extends AbstractTransportParams {
 export abstract class AbstractApiTransport extends AbstractTransport {
     // sessions client is a standardized interface for communicating with sessions backend
     // which can live in couple of context (shared worker, local module, websocket server etc)
-    private sessionsClient: ConstructorParams['sessionsClient'];
-    private api: AbstractApi;
+    public sessionsClient: ConstructorParams['sessionsClient'];
+    public api: AbstractApi;
     protected acquirePromise?: Deferred<void>;
 
     constructor({ messages, api, sessionsClient, signal }: ConstructorParams) {

@@ -4,7 +4,7 @@ import cors from 'cors';
 import { arrayPartition } from '@trezor/utils/lib/arrayPartition';
 
 import { Descriptor } from '../types';
-import { sessionsClient, enumerate, acquire, release, call, send, receive } from './core';
+import { multiTransport } from './core';
 
 const defaults = {
     port: 21325,
@@ -33,10 +33,13 @@ export class TrezordNode {
 
         this.listenSubscriptions = [];
 
+        multiTransport.transports.forEach(transport => {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
-        sessionsClient.on('descriptors', descriptors => {
-            this.resolveListenSubscriptions(descriptors);
-        });
+            transport.sessionsClient.on('descriptors', descriptors => {
+                this.resolveListenSubscriptions(descriptors);
+
+            });
+        })
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
@@ -78,15 +81,12 @@ export class TrezordNode {
 
             app.post('/enumerate', (_req, res) => {
                 res.set('Content-Type', 'text/plain');
-                enumerate()
+                return multiTransport.enumerate()
                     .then(result => {
-                        if (!result.success) {
-                            throw new Error('todo');
-                        }
-                        res.send(result.payload.descriptors);
-                    })
-                    .catch(err => {
-                        res.send({ error: err.message });
+                        res.send(result);
+                    }).catch((error) => {
+                        // todo: error
+                        res.send({ error: error.message });
                     });
             });
 
@@ -102,17 +102,17 @@ export class TrezordNode {
 
             app.post('/acquire/:path/:previous', express.json(), (req, res) => {
                 res.set('Content-Type', 'text/plain');
-
-                acquire({ path: req.params.path, previous: req.params.previous }).then(result => {
+            
+                multiTransport.acquire({input: { path: req.params.path, previous: req.params.previous }}, 'usb').promise.then(result => {
                     if (!result.success) {
                         return res.send({ error: result.error });
                     }
-                    res.send({ session: result.payload.session });
+                    res.send({ session: result.payload });
                 });
             });
 
             app.post('/release/:session', express.json(), (req, res) => {
-                release({ session: req.params.session, path: req.body }).then(result => {
+                multiTransport.release({ session: req.params.session, path: req.body }, 'usb').promise.then(result => {
                     if (!result.success) {
                         return res.send({ error: result.error });
                     }
@@ -122,7 +122,7 @@ export class TrezordNode {
 
             app.post('/call/:session', express.text(), (req, res) => {
                 res.set('Content-Type', 'text/plain');
-                call({ session: req.params.session, data: req.body }).then(result => {
+                multiTransport.call({ session: req.params.session, data: req.body }, 'usb').promise.then(result => {
                     if (!result.success) {
                         return res.send({ error: result.error });
                     }
@@ -131,7 +131,7 @@ export class TrezordNode {
             });
 
             app.post('/read/:session', (req, res) => {
-                receive({ session: req.params.session }).then(result => {
+                multiTransport.receive({ session: req.params.session }, 'usb').promise.then(result => {
                     if (!result.success) {
                         return res.send({ error: result.error });
                     }
@@ -140,7 +140,7 @@ export class TrezordNode {
             });
 
             app.post('/post/:session', express.text(), (req, res) => {
-                send({ session: req.params.session, data: req.body }).then(result => {
+                multiTransport.send({ session: req.params.session, data: req.body }, 'usb').promise.then(result => {
                     if (!result.success) {
                         return res.send({ error: result.error });
                     }
