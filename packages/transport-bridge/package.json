@@ -25,7 +25,8 @@
     "pkg": {
         "outputPath": "build",
         "targets": [
-            "node18-macos-x64"
+            "node18-macos-x64",
+            "node18-linux-arm64"
         ],
         "assets": [
             "../../node_modules/usb/**/*"
