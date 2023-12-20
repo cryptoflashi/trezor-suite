@@ -34,12 +34,17 @@ export class TrezordNode {
         this.listenSubscriptions = [];
 
         multiTransport.transports.forEach(transport => {
-        // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
+            // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
             transport.sessionsClient.on('descriptors', descriptors => {
-                this.resolveListenSubscriptions(descriptors);
+                console.log('multitransport, nextdescriptors', descriptors);
 
+                console.log(
+                    'multitransport pending subscriptiosns',
+                    this.listenSubscriptions.map(d => d.descriptors),
+                );
+                this.resolveListenSubscriptions(descriptors);
             });
-        })
+        });
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
@@ -81,10 +86,12 @@ export class TrezordNode {
 
             app.post('/enumerate', (_req, res) => {
                 res.set('Content-Type', 'text/plain');
-                return multiTransport.enumerate()
+                return multiTransport
+                    .enumerate()
                     .then(result => {
                         res.send(result);
-                    }).catch((error) => {
+                    })
+                    .catch(error => {
                         // todo: error
                         res.send({ error: error.message });
                     });
@@ -102,51 +109,67 @@ export class TrezordNode {
 
             app.post('/acquire/:path/:previous', express.json(), (req, res) => {
                 res.set('Content-Type', 'text/plain');
-            
-                multiTransport.acquire({input: { path: req.params.path, previous: req.params.previous }}, 'usb').promise.then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send({ session: result.payload });
-                });
+
+                multiTransport
+                    .acquire(
+                        { input: { path: req.params.path, previous: req.params.previous } },
+                        'usb',
+                    )
+                    .promise.then(result => {
+                        if (!result.success) {
+                            return res.send({ error: result.error });
+                        }
+                        res.send({ session: result.payload });
+                    });
             });
 
             app.post('/release/:session', express.json(), (req, res) => {
-                multiTransport.release({ session: req.params.session, path: req.body }, 'usb').promise.then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send({ session: req.params.session });
-                });
+                multiTransport
+                    .release({ session: req.params.session, path: req.body }, 'usb')
+                    .promise.then(result => {
+                        if (!result.success) {
+                            return res.send({ error: result.error });
+                        }
+                        res.send({ session: req.params.session });
+                    });
             });
 
-            app.post('/call/:session', express.text(), (req, res) => {
+            app.post('/call/:session/:medium', express.text(), (req, res) => {
                 res.set('Content-Type', 'text/plain');
-                multiTransport.call({ session: req.params.session, data: req.body }, 'usb').promise.then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send(result.payload);
-                });
+                multiTransport
+                    .call(
+                        { session: req.params.session, data: req.body },
+                        req.params.medium as 'usb',
+                    )
+                    .promise.then(result => {
+                        if (!result.success) {
+                            return res.send({ error: result.error });
+                        }
+                        res.send(result.payload);
+                    });
             });
 
             app.post('/read/:session', (req, res) => {
-                multiTransport.receive({ session: req.params.session }, 'usb').promise.then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    res.send(result.payload);
-                });
+                multiTransport
+                    .receive({ session: req.params.session }, 'usb')
+                    .promise.then(result => {
+                        if (!result.success) {
+                            return res.send({ error: result.error });
+                        }
+                        res.send(result.payload);
+                    });
             });
 
             app.post('/post/:session', express.text(), (req, res) => {
-                multiTransport.send({ session: req.params.session, data: req.body }, 'usb').promise.then(result => {
-                    if (!result.success) {
-                        return res.send({ error: result.error });
-                    }
-                    // todo: check repsone
-                    res.send('ok');
-                });
+                multiTransport
+                    .send({ session: req.params.session, data: req.body }, 'usb')
+                    .promise.then(result => {
+                        if (!result.success) {
+                            return res.send({ error: result.error });
+                        }
+                        // todo: check repsone
+                        res.send('ok');
+                    });
             });
 
             app.listen(this.port, () => {

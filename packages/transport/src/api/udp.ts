@@ -111,6 +111,7 @@ export class UdpApi extends AbstractApi {
             );
         });
 
+        console.log('pinged', pinged);
         return pinged;
     }
 
@@ -121,7 +122,7 @@ export class UdpApi extends AbstractApi {
         const enumerateResult = await Promise.all(
             paths.map(path => this.ping(path).then(pinged => (pinged ? path : undefined))),
         ).then(res => res.filter(isNotUndefined).map(path => `${this.pathPrefix}-${path}`));
-
+        console.log('enumerateResult', enumerateResult);
         return this.success(enumerateResult);
     }
 

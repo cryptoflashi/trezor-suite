@@ -298,6 +298,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
+        medium?: string;
     }): AbortableCall<
         MessageFromTrezor,
         // bridge

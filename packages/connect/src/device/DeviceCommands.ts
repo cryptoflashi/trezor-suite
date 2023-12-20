@@ -379,6 +379,7 @@ export class DeviceCommands {
 
         this.callPromise = this.transport.call({
             session: this.sessionId,
+            medium: `${this.device.originalDescriptor.path.split('-')[0]}`,
             name: type,
             data: msg,
             protocol: this.device.protocol,

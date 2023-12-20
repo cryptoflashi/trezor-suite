@@ -93,6 +93,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         return this.scheduleAction(
             async () => {
                 const { path } = input;
+                console.log('nodeusb acquire: input', input);
 
                 if (this.listening) {
                     this.listenPromise[path] = createDeferred();
@@ -101,6 +102,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 this.acquirePromise = createDeferred();
 
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
+                console.log('acquireIntentResponse', acquireIntentResponse);
 
                 if (this.acquirePromise) {
                     this.acquirePromise.resolve(undefined);
@@ -114,7 +116,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 const reset = !!input.previous;
                 const openDeviceResult = await this.api.openDevice(path, reset);
-
+                console.log('openDeviceResult', openDeviceResult);
                 if (!openDeviceResult.success) {
                     if (this.listenPromise) {
                         this.listenPromise[path].resolve(openDeviceResult);
