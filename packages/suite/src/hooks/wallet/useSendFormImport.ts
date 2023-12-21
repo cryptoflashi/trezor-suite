@@ -51,22 +51,22 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
 
                 if (currency === network.symbol) {
                     // csv amount in crypto currency
-                    const cryptoValue = item.amount || '';
-                    if (!isInteger(cryptoValue) && shouldSendInSats) {
+                    const cryptoAmount = item.amount || '';
+                    if (shouldSendInSats && !isInteger(cryptoAmount)) {
                         // try to convert to satoshis
-                        output.amount = amountToSatoshi(cryptoValue, network.decimals);
+                        output.amount = amountToSatoshi(cryptoAmount, network.decimals);
                     } else {
-                        output.amount = cryptoValue;
+                        output.amount = cryptoAmount;
                     }
 
                     // calculate Fiat from Amount
                     if (fiatRates && fiatRates.current) {
-                        const fiatAmount = shouldSendInSats
+                        const cryptoValue = shouldSendInSats
                             ? formatAmount(output.amount, network.decimals)
                             : output.amount;
                         output.fiat =
                             toFiatCurrency(
-                                fiatAmount,
+                                cryptoValue,
                                 output.currency.value,
                                 fiatRates.current.rates,
                             ) || '';
@@ -87,12 +87,12 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                         fiatRates.current.rates,
                         network.decimals,
                     );
-                    const amount =
+                    const cryptoAmount =
                         cryptoValue && shouldSendInSats
                             ? amountToSatoshi(cryptoValue, network.decimals)
                             : cryptoValue ?? '';
 
-                    output.amount = amount;
+                    output.amount = cryptoAmount;
                 } else if (tokens) {
                     // csv amount in ERC20 currency
                     const token = tokens.find(t => t.symbol === currency);
