@@ -2,11 +2,11 @@ import { TypedEmitter } from '@trezor/utils/lib/typedEventEmitter';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { Throttler } from './workers/throttler';
 import type { BlockchainSettings } from '@trezor/blockchain-link-types';
 import type * as ResponseTypes from '@trezor/blockchain-link-types/lib/responses';
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import type { Events } from '@trezor/blockchain-link-types/lib/events';
+import { Throttler } from '@trezor/utils/lib/throttler';
 
 const workerWrapper = (factory: BlockchainSettings['worker']): Worker | Promise<Worker> => {
     if (typeof factory === 'function') return factory();

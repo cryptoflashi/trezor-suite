@@ -18,7 +18,7 @@ import TrezorConnect, {
     BlockchainNotification,
     FeeLevel,
 } from '@trezor/connect';
-import { arrayDistinct } from '@trezor/utils';
+import { arrayDistinct, Throttler } from '@trezor/utils';
 import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { Timeout } from '@trezor/type-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -320,11 +320,21 @@ export const onBlockchainConnectThunk = createThunk(
     },
 );
 
+const fastNetworkSymbols: NetworkSymbol[] = ['matic'];
+const fastNetworksBlockMinedThrottler = new Throttler(1000 * 15); // 15 seconds
+
 export const onBlockMinedThunk = createThunk(
     `${actionsPrefix}/onBlockMinedThunk`,
     (block: BlockchainBlock, { dispatch }) => {
         const symbol = block.coin.shortcut.toLowerCase();
         if (isNetworkSymbol(symbol)) {
+            // throttle networks with very fast blocks
+            if (fastNetworkSymbols.includes(symbol)) {
+                fastNetworksBlockMinedThrottler.throttle(symbol, () => {
+                    dispatch(syncAccountsWithBlockchainThunk(symbol));
+                });
+                return;
+            }
             return dispatch(syncAccountsWithBlockchainThunk(symbol));
         }
     },

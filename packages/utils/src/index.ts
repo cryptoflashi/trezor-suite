@@ -27,6 +27,7 @@ export * from './parseHostname';
 export * from './promiseAllSequence';
 export * from './redactUserPath';
 export * from './scheduleAction';
+export * from './throttler';
 export * from './throwError';
 export * from './truncateMiddle';
 export * from './topologicalSort';

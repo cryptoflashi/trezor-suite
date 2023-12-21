@@ -2965,6 +2965,10 @@ export default defineMessages({
         defaultMessage: 'NEM',
         id: 'TR_NETWORK_NEM',
     },
+    TR_NETWORK_POLYGON: {
+        defaultMessage: 'Polygon',
+        id: 'TR_NETWORK_POLYGON',
+    },
     TR_NETWORK_STELLAR: {
         defaultMessage: 'Stellar',
         id: 'TR_NETWORK_STELLAR',
