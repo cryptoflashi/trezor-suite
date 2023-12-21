@@ -11,6 +11,7 @@ import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
+import { NetworkExplanation } from 'src/views/wallet/transactions/components/NetworkExplanation';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -92,6 +93,7 @@ export const Transactions = () => {
     if (account.empty) {
         return (
             <Layout selectedAccount={selectedAccount} showEmptyHeaderPlaceholder>
+                <NetworkExplanation account={selectedAccount.account} />
                 <AccountEmpty account={selectedAccount.account} />
             </Layout>
         );
