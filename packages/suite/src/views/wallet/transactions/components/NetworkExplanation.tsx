@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { variables, Card } from '@trezor/components';
 import { Account } from 'src/types/wallet';
 import { getMainnets } from '@suite-common/wallet-config';
+import { useDispatch } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,6 +36,7 @@ interface AccountEmptyProps {
 }
 
 export const NetworkExplanation = ({ account }: AccountEmptyProps) => {
+    const dispatch = useDispatch();
     const network = getMainnets().find(n => n.symbol === account.symbol);
 
     if (network?.networkType !== 'ethereum') {
@@ -44,7 +47,14 @@ export const NetworkExplanation = ({ account }: AccountEmptyProps) => {
 
     return (
         <Wrapper>
-            <StyledCard largePadding>
+            <StyledCard
+                largePadding
+                onClick={() => {
+                    dispatch(
+                        openModal({ type: 'confirm-network-explanation', coin: account.symbol }),
+                    );
+                }}
+            >
                 {network.symbol === 'eth' ? (
                     <>
                         <Title>{network.name} is its own blockchain</Title>

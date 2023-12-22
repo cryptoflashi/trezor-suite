@@ -165,4 +165,8 @@ export type UserContextPayload =
       }
     | {
           type: 'authenticate-device-fail';
+      }
+    | {
+          type: 'confirm-network-explanation';
+          coin: Account['symbol'];
       };
