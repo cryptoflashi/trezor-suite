@@ -68,7 +68,7 @@ const cancel = (error?: string) => {
     }
 };
 
-const handshakePromise = createDeferred();
+let handshakePromise = createDeferred();
 
 const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
     logger.debug('initiating');
@@ -139,6 +139,10 @@ const call: CallMethod = async params => {
         logger.debug('call: response: ', response);
 
         if (response) {
+            if (_popupManager) {
+                _popupManager.clear();
+                handshakePromise = createDeferred();
+            }
             return response;
         }
 
