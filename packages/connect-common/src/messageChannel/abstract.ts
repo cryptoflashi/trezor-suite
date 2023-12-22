@@ -72,10 +72,8 @@ export abstract class AbstractMessageChannel<
      * initiates handshake sequence with peer. resolves after communication with peer is established
      */
     public init() {
-        if (!this.handshakeFinished) {
-            this.handshakeFinished = createDeferred();
-            this.handshakeWithPeer();
-        }
+        this.handshakeFinished = createDeferred();
+        this.handshakeWithPeer();
         return this.handshakeFinished.promise;
     }
 
