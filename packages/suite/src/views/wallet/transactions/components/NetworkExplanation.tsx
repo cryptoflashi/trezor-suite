@@ -50,6 +50,7 @@ export const NetworkExplanation = ({ account }: AccountEmptyProps) => {
             <StyledCard
                 largePadding
                 onClick={() => {
+                    // TODO: remove
                     dispatch(
                         openModal({ type: 'confirm-network-explanation', coin: account.symbol }),
                     );

@@ -2,17 +2,19 @@ import styled from 'styled-components';
 
 import { Translation, Modal } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { Button, H3, Image, variables } from '@trezor/components';
+import { Button, CoinLogo, H3, Image, variables } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
 import { getMainnets } from '@suite-common/wallet-config';
 
 const StyledImage = styled(Image)`
+    width: 100%;
+    height: 100%;
     align-self: center;
 `;
 
 const StyledModal = styled(Modal)`
-    width: 520px;
+    width: 390px;
 `;
 
 const StyledButton = styled(Button)`
@@ -37,6 +39,36 @@ const Description = styled.span`
     text-align: left;
 `;
 
+const ImageWrapper = styled.div`
+    position: relative;
+    margin-bottom: 32px;
+`;
+
+const ImageCoinLogoCommon = styled(CoinLogo)`
+    position: absolute;
+
+    div {
+        height: 100%;
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+`;
+
+const ImageCoinLogoLeft = styled(ImageCoinLogoCommon)`
+    top: 17%;
+    left: 3.5%;
+    height: 52%;
+`;
+
+const ImageCoinLogoRight = styled(ImageCoinLogoCommon)`
+    top: 31%;
+    right: 3.5%;
+    height: 52%;
+`;
+
 interface ConfirmNetworkExplanationModalProps {
     coin: Account['symbol'];
 }
@@ -55,6 +87,7 @@ export const ConfirmNetworkExplanationModal = ({ coin }: ConfirmNetworkExplanati
 
     return (
         <StyledModal
+            headerComponent={null}
             bottomBar={
                 <StyledButton variant="primary" onClick={close}>
                     <Translation id="TR_CONFIRM" />
@@ -62,7 +95,11 @@ export const ConfirmNetworkExplanationModal = ({ coin }: ConfirmNetworkExplanati
             }
         >
             <Content>
-                <StyledImage image="DEVICE_ANOTHER_SESSION" />
+                <ImageWrapper>
+                    <StyledImage image="CONFIRM_NETWORK_EXPLANATION" />
+                    <ImageCoinLogoLeft symbol={network.symbol} />
+                    <ImageCoinLogoRight symbol="eth" />
+                </ImageWrapper>
                 <Title>Stay on the {network.name} chain</Title>
                 <Description>
                     Polygon is a standalone blockchain that operates in conjunction with the
