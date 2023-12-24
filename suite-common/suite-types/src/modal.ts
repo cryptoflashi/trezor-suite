@@ -167,6 +167,7 @@ export type UserContextPayload =
           type: 'authenticate-device-fail';
       }
     | {
-          type: 'confirm-network-explanation';
+          type: 'confirm-evm-explanation';
           coin: Account['symbol'];
+          route: 'wallet-receive' | 'wallet-send';
       };

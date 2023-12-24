@@ -8360,4 +8360,32 @@ export default defineMessages({
         id: 'TR_RESTART_TREZOR_DEVICE_TUTORIAL',
         defaultMessage: 'Restart tutorial',
     },
+    TR_EVM_EXPLANATION_TITLE: {
+        id: 'TR_EVM_EXPLANATION_DESCRIPTION_ETH',
+        defaultMessage: '{network} is its own blockchain',
+    },
+    TR_EVM_EXPLANATION_DESCRIPTION_ETH: {
+        id: 'TR_EVM_EXPLANATION_DESCRIPTION_ETH',
+        defaultMessage:
+            'Description for {network}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a ante quis lectus eleifend rutrum. Aenean tincidunt odio vel fermentum ultricies. Sed suscipit interdum eros, eget placerat lorem pulvinar in.',
+    },
+    TR_EVM_EXPLANATION_DESCRIPTION_OTHER: {
+        id: 'TR_EVM_EXPLANATION_DESCRIPTION_OTHER',
+        defaultMessage:
+            '{network} is a standalone blockchain that operates in conjunction with the Ethereum network. While {network} uses the same address format as Ethereum, the coins and tokens within this network are unique to {network} and not interchangeable with other blockchains.',
+    },
+    TR_CONFIRM_EVM_EXPLANATION_TITLE: {
+        id: 'TR_CONFIRM_EVM_EXPLANATION_TITLE',
+        defaultMessage: 'Stay on the {network} chain',
+    },
+    TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
+        id: 'TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
+        defaultMessage:
+            "Make sure the sender stays on the {network} chain. If coins or tokens are sent outside the {network} chain, you won't be able to access them.",
+    },
+    TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION: {
+        id: 'TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION',
+        defaultMessage:
+            "Make sure that this transaction starts and finishes on the {network} chain. If you send your coins or tokens outside the {network} chain, the receiver won't be able to access them.",
+    },
 });

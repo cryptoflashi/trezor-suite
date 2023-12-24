@@ -6,6 +6,8 @@ import { Button, CoinLogo, H3, Image, variables } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
 import { getMainnets } from '@suite-common/wallet-config';
+import { Route } from '@suite-common/suite-types';
+import { TranslationKey } from 'src/components/suite/Translation';
 
 const StyledImage = styled(Image)`
     width: 100%;
@@ -69,11 +71,15 @@ const ImageCoinLogoRight = styled(ImageCoinLogoCommon)`
     height: 52%;
 `;
 
-interface ConfirmNetworkExplanationModalProps {
+export interface ConfirmNetworkExplanationModalProps {
     coin: Account['symbol'];
+    route: 'wallet-receive' | 'wallet-send';
 }
 
-export const ConfirmNetworkExplanationModal = ({ coin }: ConfirmNetworkExplanationModalProps) => {
+export const ConfirmEvmExplanationModal = ({
+    coin,
+    route,
+}: ConfirmNetworkExplanationModalProps) => {
     const dispatch = useDispatch();
     const close = () => dispatch(onCancel());
 
@@ -83,7 +89,10 @@ export const ConfirmNetworkExplanationModal = ({ coin }: ConfirmNetworkExplanati
         return null;
     }
 
-    // TODO: translations
+    const descriptionTranslationsIds: Record<typeof route, TranslationKey> = {
+        'wallet-receive': 'TR_CONFIRM_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
+        'wallet-send': 'TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION',
+    };
 
     return (
         <StyledModal
@@ -96,16 +105,25 @@ export const ConfirmNetworkExplanationModal = ({ coin }: ConfirmNetworkExplanati
         >
             <Content>
                 <ImageWrapper>
-                    <StyledImage image="CONFIRM_NETWORK_EXPLANATION" />
+                    <StyledImage image="CONFIRM_EVM_EXPLANATION" />
                     <ImageCoinLogoLeft symbol={network.symbol} />
                     <ImageCoinLogoRight symbol="eth" />
                 </ImageWrapper>
-                <Title>Stay on the {network.name} chain</Title>
+                <Title>
+                    <Translation
+                        id="TR_CONFIRM_EVM_EXPLANATION_TITLE"
+                        values={{
+                            network: network.name,
+                        }}
+                    />
+                </Title>
                 <Description>
-                    Polygon is a standalone blockchain that operates in conjunction with the
-                    Ethereum network. While Polygon uses the same address format as Ethereum, the
-                    coins and tokens within this network are unique to Polygon and not
-                    interchangeable with other blockchains.
+                    <Translation
+                        id={descriptionTranslationsIds[route]}
+                        values={{
+                            network: network.name,
+                        }}
+                    />
                 </Description>
             </Content>
         </StyledModal>

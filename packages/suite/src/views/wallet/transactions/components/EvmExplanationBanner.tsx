@@ -5,6 +5,7 @@ import { Account } from 'src/types/wallet';
 import { getMainnets } from '@suite-common/wallet-config';
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
+import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,19 +32,17 @@ const Description = styled.span`
     line-height: 18px;
 `;
 
-interface AccountEmptyProps {
+interface EvmExplanationBannerProps {
     account: Account;
 }
 
-export const NetworkExplanation = ({ account }: AccountEmptyProps) => {
+export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
     const dispatch = useDispatch();
     const network = getMainnets().find(n => n.symbol === account.symbol);
 
     if (network?.networkType !== 'ethereum') {
         return null;
     }
-
-    // TODO: translations
 
     return (
         <Wrapper>
@@ -52,26 +51,34 @@ export const NetworkExplanation = ({ account }: AccountEmptyProps) => {
                 onClick={() => {
                     // TODO: remove
                     dispatch(
-                        openModal({ type: 'confirm-network-explanation', coin: account.symbol }),
+                        openModal({
+                            type: 'confirm-evm-explanation',
+                            coin: account.symbol,
+                            route: 'wallet-receive',
+                        }),
                     );
                 }}
             >
-                {network.symbol === 'eth' ? (
-                    <>
-                        <Title>{network.name} is its own blockchain</Title>
-                        <Description>Ethereum is a standalone blockchain.</Description>
-                    </>
-                ) : (
-                    <>
-                        <Title>{network.name} is its own blockchain</Title>
-                        <Description>
-                            Polygon is a standalone blockchain that operates in conjunction with the
-                            Ethereum network. While Polygon uses the same address format as
-                            Ethereum, the coins and tokens within this network are unique to Polygon
-                            and not interchangeable with other blockchains.
-                        </Description>
-                    </>
-                )}
+                <Title>
+                    <Translation
+                        id="TR_EVM_EXPLANATION_TITLE"
+                        values={{
+                            network: network.name,
+                        }}
+                    />
+                </Title>
+                <Description>
+                    <Translation
+                        id={
+                            network.symbol === 'eth'
+                                ? 'TR_EVM_EXPLANATION_DESCRIPTION_ETH'
+                                : 'TR_EVM_EXPLANATION_DESCRIPTION_OTHER'
+                        }
+                        values={{
+                            network: network.name,
+                        }}
+                    />
+                </Description>
             </StyledCard>
         </Wrapper>
     );
