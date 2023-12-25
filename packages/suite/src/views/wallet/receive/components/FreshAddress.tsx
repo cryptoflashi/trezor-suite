@@ -6,9 +6,11 @@ import { AppState } from 'src/types/suite';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 
-import { Button, Card, variables, H2, Tooltip } from '@trezor/components';
+import { Button, Card, variables, H2, Tooltip, CoinLogo } from '@trezor/components';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import { getMainnets } from '@suite-common/wallet-config';
+import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -68,6 +70,10 @@ const Overlay = styled.div`
         rgb(0 0 0 / 0%) 0%,
         ${({ theme }) => theme.BG_WHITE} 220px
     );
+`;
+
+const StyledEvmExplanationBox = styled(EvmExplanationBox)`
+    margin-top: 26px;
 `;
 
 const TooltipLabel = ({
@@ -186,6 +192,16 @@ export const FreshAddress = ({
                     <Translation id="RECEIVE_ADDRESS_REVEAL" />
                 </StyledButton>
             </Tooltip>
+            {account.networkType === 'ethereum' && (
+                <StyledEvmExplanationBox symbol={account.symbol}>
+                    <Translation
+                        id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
+                        values={{
+                            network: getMainnets().find(n => n.symbol === account.symbol)?.name,
+                        }}
+                    />
+                </StyledEvmExplanationBox>
+            )}
         </StyledCard>
     );
 };

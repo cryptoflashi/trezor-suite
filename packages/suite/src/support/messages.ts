@@ -8388,4 +8388,14 @@ export default defineMessages({
         defaultMessage:
             "Make sure that this transaction starts and finishes on the {network} chain. If you send your coins or tokens outside the {network} chain, the receiver won't be able to access them.",
     },
+    TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
+        id: 'TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
+        defaultMessage:
+            "This receive address is only for {network} coins and tokens. If someone sends you crypto from outside the {network} chain, you won't receive them. They'll be lost.",
+    },
+    TR_EVM_EXPLANATION_SEND_DESCRIPTION: {
+        id: 'TR_EVM_EXPLANATION_SEND_DESCRIPTION',
+        defaultMessage:
+            'Make sure you send only on {network}. The receiver will lose their crypto if you send them outside the {network} chain.',
+    },
 });

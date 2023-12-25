@@ -6,6 +6,9 @@ import { variables, motionAnimation } from '@trezor/components';
 import { Address } from './components/Address';
 import { Amount } from './components/Amount';
 import OpReturn from './components/OpReturn';
+import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
+import { Translation } from 'src/components/suite';
+import { getMainnets } from '@suite-common/wallet-config';
 
 const Wrapper = styled.div``;
 
@@ -40,12 +43,17 @@ const Row = styled.div`
     }
 `;
 
+const StyledEvmExplanationBox = styled(EvmExplanationBox)`
+    margin-top: 10px;
+    margin-bottom: 14px;
+`;
+
 interface OutputsProps {
     disableAnim?: boolean; // used in tests, with animations enabled react-testing-library can't find output fields
 }
 
 const Outputs = ({ disableAnim }: OutputsProps) => {
-    const { outputs } = useSendFormContext();
+    const { outputs, account } = useSendFormContext();
     const [renderedOutputs, setRenderedOutputs] = useState(1);
     const lastOutputRef = useRef<HTMLDivElement | null>(null);
 
@@ -91,6 +99,18 @@ const Outputs = ({ disableAnim }: OutputsProps) => {
                                             outputId={index}
                                             outputsCount={outputs.length}
                                         />
+                                        {account.networkType === 'ethereum' && (
+                                            <StyledEvmExplanationBox symbol={account.symbol}>
+                                                <Translation
+                                                    id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
+                                                    values={{
+                                                        network: getMainnets().find(
+                                                            n => n.symbol === account.symbol,
+                                                        )?.name,
+                                                    }}
+                                                />
+                                            </StyledEvmExplanationBox>
+                                        )}
                                     </Row>
                                     <Row>
                                         <Amount output={outputs[index]} outputId={index} />
