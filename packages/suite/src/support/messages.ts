@@ -8398,4 +8398,9 @@ export default defineMessages({
         defaultMessage:
             'Make sure you send only on {network}. The receiver will lose their crypto if you send them outside the {network} chain.',
     },
+    TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION: {
+        id: 'TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION',
+        defaultMessage:
+            'You can only send {network} tokens to a <b>receive address on the {network} chain</b>, otherwise your tokens <b>will be lost</b>.',
+    },
 });

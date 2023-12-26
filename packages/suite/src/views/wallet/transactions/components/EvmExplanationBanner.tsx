@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { variables, Card } from '@trezor/components';
 import { Account } from 'src/types/wallet';
-import { getMainnets } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
@@ -38,9 +38,10 @@ interface EvmExplanationBannerProps {
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
     const dispatch = useDispatch();
-    const network = getMainnets().find(n => n.symbol === account.symbol);
 
-    if (network?.networkType !== 'ethereum') {
+    const network = networks[account.symbol];
+
+    if (network.networkType !== 'ethereum') {
         return null;
     }
 
@@ -70,7 +71,7 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
                 <Description>
                     <Translation
                         id={
-                            network.symbol === 'eth'
+                            account.symbol === 'eth'
                                 ? 'TR_EVM_EXPLANATION_DESCRIPTION_ETH'
                                 : 'TR_EVM_EXPLANATION_DESCRIPTION_OTHER'
                         }

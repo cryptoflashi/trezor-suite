@@ -5,8 +5,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { Button, CoinLogo, H3, Image, variables } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { Account } from '@suite-common/wallet-types';
-import { getMainnets } from '@suite-common/wallet-config';
-import { Route } from '@suite-common/suite-types';
+import { networks } from '@suite-common/wallet-config';
 import { TranslationKey } from 'src/components/suite/Translation';
 
 const StyledImage = styled(Image)`
@@ -83,9 +82,9 @@ export const ConfirmEvmExplanationModal = ({
     const dispatch = useDispatch();
     const close = () => dispatch(onCancel());
 
-    const network = getMainnets().find(n => n.symbol === coin);
+    const network = networks[coin];
 
-    if (!network) {
+    if (network.networkType !== 'ethereum') {
         return null;
     }
 
@@ -106,7 +105,7 @@ export const ConfirmEvmExplanationModal = ({
             <Content>
                 <ImageWrapper>
                     <StyledImage image="CONFIRM_EVM_EXPLANATION" />
-                    <ImageCoinLogoLeft symbol={network.symbol} />
+                    <ImageCoinLogoLeft symbol={coin} />
                     <ImageCoinLogoRight symbol="eth" />
                 </ImageWrapper>
                 <Title>
