@@ -20,6 +20,8 @@ test.beforeAll(async () => {
 });
 
 test.beforeEach(async () => {
+    log('beforeEach url', url);
+    log('beforeEach isWebExtension', `${isWebExtension}`);
     log('beforeEach', 'stopBridge');
     await TrezorUserEnvLink.api.stopBridge();
     log('beforeEach', 'stopEmu');
@@ -55,6 +57,7 @@ let popup: Page;
 // Debug mode does not have to be enable since it is default in connect-explorer
 test('input passphrase in popup and device accepts it', async ({ page }) => {
     log('start', test.info().title);
+    log('url', url);
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,

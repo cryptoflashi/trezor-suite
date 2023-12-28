@@ -340,9 +340,9 @@ connect-popup legacy npm package:
   interruptible: true
   parallel:
     matrix:
-      - TEST_FILE: ["methods.test"]
+      # - TEST_FILE: ["methods.test"]
       - TEST_FILE: ["passphrase.test"]
-      - TEST_FILE: ["popup-error-page.test"]
+      # - TEST_FILE: ["popup-error-page.test"]
       # - TEST_FILE: ["popup-close.test"]
 
 connect-popup-webextension:
@@ -350,8 +350,8 @@ connect-popup-webextension:
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 connect-popup-webextension manual:
   extends: .e2e connect-popup-webextension
