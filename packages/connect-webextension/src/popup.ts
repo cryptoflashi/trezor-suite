@@ -7,21 +7,6 @@ import { Log } from '@trezor/connect/lib/utils/debug';
 
 import { ServiceWorkerWindowChannel } from './channels/serviceworker-window';
 
-export const checkIfTabExists = (tabId: number | undefined) =>
-    new Promise(resolve => {
-        if (!tabId) return resolve(false);
-        function callback(tab: any) {
-            if (chrome.runtime.lastError) {
-                resolve(false);
-            } else {
-                // Tab exists
-                console.log('tab in checkIfTabExists', tab);
-                resolve(true);
-            }
-        }
-        chrome.tabs.get(tabId, callback);
-    });
-
 export class PopupManager extends EventEmitter {
     popupWindow: chrome.tabs.Tab | null = null;
 

@@ -33,6 +33,21 @@ const logger = initLog('@trezor/connect-webextension');
 const popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
 let _popupManager: popup.PopupManager;
 
+const checkIfTabExists = (tabId: number | undefined) =>
+    new Promise(resolve => {
+        if (!tabId) return resolve(false);
+        function callback(tab: any) {
+            if (chrome.runtime.lastError) {
+                resolve(false);
+            } else {
+                // Tab exists
+                console.log('tab in checkIfTabExists', tab);
+                resolve(true);
+            }
+        }
+        chrome.tabs.get(tabId, callback);
+    });
+
 const logWriterFactory = (popupManager: popup.PopupManager): LogWriter => ({
     add: (message: LogMessage) => {
         popupManager.channel.postMessage(
@@ -116,6 +131,16 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
 const call: CallMethod = async params => {
     logger.debug('call', params);
     console.log('############### call in connect-webextension  #################');
+
+    console.log('_popupManager.popupWindow?.id', _popupManager.popupWindow?.id);
+    if (_popupManager.popupWindow?.id) {
+        const currentPopupExists = await checkIfTabExists(_popupManager.popupWindow?.id);
+        console.log('currentPopupExists', currentPopupExists);
+        if (!currentPopupExists) {
+            _popupManager.clear();
+            handshakePromise = createDeferred();
+        }
+    }
 
     console.log('_settings.popup', _settings.popup);
     // request popup window it might be used in the future

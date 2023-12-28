@@ -166,6 +166,7 @@ test.beforeAll(async () => {
             state: 'visible',
         });
         log('afterEach', 'waiting for popup open');
+        console.log('isWebExtension', isWebExtension);
         [popup] = await openPopup(context, explorerPage, isWebExtension);
         log('afterEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
