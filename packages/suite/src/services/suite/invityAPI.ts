@@ -83,21 +83,21 @@ class InvityAPI {
     private EXCHANGE_WATCH_TRADE = '/api/exchange/watch/{{counter}}';
 
     // buy service
-    private BUY_LIST = '/api/buy/list';
-    private BUY_QUOTES = '/api/buy/quotes';
-    private BUY_DO_TRADE = '/api/buy/trade';
-    private BUY_GET_TRADE_FORM = '/api/buy/tradeform';
-    private BUY_WATCH_TRADE = '/api/buy/watch/{{counter}}';
+    private BUY_LIST = '/api/v2/buy/list';
+    private BUY_QUOTES = '/api/v2/buy/quotes';
+    private BUY_DO_TRADE = '/api/v2/buy/trade';
+    private BUY_GET_TRADE_FORM = '/api/v2/buy/tradeform';
+    private BUY_WATCH_TRADE = '/api/v2/buy/watch/{{counter}}';
 
     // sell service
-    private SELL_LIST = '/api/sell/list';
-    private VOUCHER_QUOTES = '/api/sell/voucher/quotes';
-    private VOUCHER_REQUEST_TRADE = '/api/sell/voucher/trade';
-    private VOUCHER_CONFIRM_TRADE = '/api/sell/voucher/confirm';
-    private SELL_FIAT_QUOTES = '/api/sell/fiat/quotes';
-    private SELL_FIAT_DO_TRADE = '/api/sell/fiat/trade';
-    private SELL_FIAT_CONFIRM = '/api/sell/fiat/confirm';
-    private SELL_FIAT_WATCH_TRADE = '/api/sell/fiat/watch/{{counter}}';
+    private SELL_LIST = '/api/v2/sell/list';
+    private VOUCHER_QUOTES = '/api/v2/sell/voucher/quotes';
+    private VOUCHER_REQUEST_TRADE = '/api/v2/sell/voucher/trade';
+    private VOUCHER_CONFIRM_TRADE = '/api/v2/sell/voucher/confirm';
+    private SELL_FIAT_QUOTES = '/api/v2/sell/fiat/quotes';
+    private SELL_FIAT_DO_TRADE = '/api/v2/sell/fiat/trade';
+    private SELL_FIAT_CONFIRM = '/api/v2/sell/fiat/confirm';
+    private SELL_FIAT_WATCH_TRADE = '/api/v2/sell/fiat/watch/{{counter}}';
 
     private P2P_LIST = '/api/p2p/list';
     private P2P_QUOTES = '/api/p2p/quotes';

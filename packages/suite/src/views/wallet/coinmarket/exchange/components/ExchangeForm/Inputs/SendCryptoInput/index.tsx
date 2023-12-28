@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FieldValues } from 'react-hook-form';
 import { getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
-import { NumberInput, NumberInputProps } from 'src/components/suite';
+import { NumberInput, NumberInputProps, Translation } from 'src/components/suite';
 import SendCryptoSelect from './SendCryptoSelect';
 import { MAX_LENGTH } from 'src/constants/suite/inputs';
 import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeForm';
@@ -89,9 +89,9 @@ const SendCryptoInput = () => {
                 setValue('setMaxOutputId', undefined, { shouldDirty: true });
                 composeRequest();
             }}
+            label={<Translation id="TR_FROM" />}
             inputState={getInputState(amountError || fiatError, amount)}
             name={CRYPTO_INPUT}
-            noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
             isToken={!!tokenData}
             rules={cryptoInputRules}

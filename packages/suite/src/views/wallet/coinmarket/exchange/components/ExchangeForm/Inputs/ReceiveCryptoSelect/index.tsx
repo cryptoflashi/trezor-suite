@@ -126,6 +126,7 @@ const ReceiveCryptoSelect = () => {
                             onChange(selected);
                             setAmountLimits(undefined);
                         }}
+                        label={<Translation id="TR_TO" />}
                         value={value}
                         isClearable={false}
                         filterOption={customSearch}

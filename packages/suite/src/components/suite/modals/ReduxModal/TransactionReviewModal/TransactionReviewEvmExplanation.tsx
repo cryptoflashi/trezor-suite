@@ -26,6 +26,7 @@ export const TransactionReviewEvmExplanation = ({
 }: TransactionReviewEvmExplanationProps) => {
     const network = networks[account.symbol];
 
+    // TODO: only ethereum
     if (network.networkType === 'ethereum') {
         return null;
     }

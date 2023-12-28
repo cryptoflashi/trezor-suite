@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
@@ -12,17 +12,29 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeFor
 import { useLayoutSize } from 'src/hooks/suite';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { variables } from '@trezor/components';
 
-const StyledLeft = styled(Left)`
-    flex-basis: 50%;
-`;
-
-const StyledMiddle = styled(Middle)`
-    min-width: 35px;
-`;
-
-const EmptyDiv = styled.div`
+const Row = styled.div<{ spaceBefore?: boolean }>`
+    display: flex;
+    align-items: flex-start;
     width: 100%;
+
+    ${({ spaceBefore }) =>
+        spaceBefore &&
+        css`
+            margin-top: 24px;
+        `}
+`;
+
+const Balance = styled.div`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const StyledFiatValue = styled(FiatValue)`
+    margin-left: 1ch;
 `;
 
 const Inputs = () => {
@@ -49,7 +61,6 @@ const Inputs = () => {
     }, [amountLimits, trigger]);
 
     const { layoutSize } = useLayoutSize();
-    const isXLargeLayoutSize = layoutSize === 'XLARGE';
 
     const setRatioAmount = useCallback(
         (divisor: number) => {
@@ -90,38 +101,40 @@ const Inputs = () => {
         composeRequest();
     }, [clearErrors, composeRequest, setValue]);
 
-    const isBalanceZero = tokenData
-        ? isZero(tokenData.balance || '0')
-        : isZero(account.formattedBalance);
+    const balance = tokenData ? tokenData.balance || '0' : account.formattedBalance;
+    const symbol = tokenData?.symbol ?? account.symbol;
+    const isBalanceZero = isZero(balance);
 
     return (
         <Wrapper responsiveSize="XL">
-            <StyledLeft>
+            <Row>
                 <SendCryptoInput />
                 {!tokenData && <FiatInput />}
-            </StyledLeft>
-            <StyledMiddle responsiveSize="XL">
-                {!isXLargeLayoutSize && (
+            </Row>
+            <Row>
+                <Left>
+                    <Balance>
+                        <Translation id="TR_BALANCE" />:{' '}
+                        <FormattedCryptoAmount value={balance} symbol={symbol} />
+                        <StyledFiatValue
+                            amount={balance}
+                            symbol={symbol}
+                            showApproximationIndicator
+                        />
+                    </Balance>
+                </Left>
+                <Right>
                     <CoinmarketFractionButtons
                         disabled={isBalanceZero}
                         onFractionClick={setRatioAmount}
                         onAllClick={setAllAmount}
+                        data-test="@coinmarket/exchange/fiat-input"
                     />
-                )}
-                <StyledIcon responsiveSize="XL" icon="TRANSFER" size={16} />
-                {!isXLargeLayoutSize && <EmptyDiv />}
-            </StyledMiddle>
-            <Right>
+                </Right>
+            </Row>
+            <Row spaceBefore>
                 <ReceiveCryptoSelect />
-            </Right>
-            {isXLargeLayoutSize && (
-                <CoinmarketFractionButtons
-                    disabled={isBalanceZero}
-                    onFractionClick={setRatioAmount}
-                    onAllClick={setAllAmount}
-                    data-test="@coinmarket/exchange/fiat-input"
-                />
-            )}
+            </Row>
         </Wrapper>
     );
 };
