@@ -8,15 +8,16 @@ broadcast.onmessage = (event: any) => {
         const { settings } = args[0];
         // TODO: use the provided settings in init.
         console.log('settings', settings);
+        // const devSettings = {
+        //     manifest: {
+        //         email: 'test@webextension.com',
+        //         appUrl: 'http://localhost:8088',
+        //     },
+        //     transports: ['BridgeTransport', 'WebUsbTransport'],
+        //     connectSrc: 'http://localhost:8088/',
+        // };
         // @ts-expect-error
-        TrezorConnect.init({
-            manifest: {
-                email: 'test@webextension.com',
-                appUrl: 'http://localhost:8088',
-            },
-            transports: ['BridgeTransport', 'WebUsbTransport'],
-            connectSrc: 'http://localhost:8088/',
-        }).then((response: any) => {
+        TrezorConnect.init(settings).then((response: any) => {
             broadcast.postMessage({
                 id,
                 payload: response,

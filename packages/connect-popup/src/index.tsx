@@ -400,7 +400,7 @@ const initCoreInPopup = async (
     const { initCore, initTransport } = await import(
         // @ts-expect-error
         // eslint-disable-next-line import/extensions
-        /* webpackIgnore: true */ './js/core.js'
+        /* webpackIgnore: true */ './core.js'
     ).catch(_err => {
         fail({
             type: 'error',
