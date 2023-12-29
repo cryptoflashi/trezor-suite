@@ -30,6 +30,8 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+import { symbolToInvityApiSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { suiteToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -156,7 +158,10 @@ export const useCoinmarketBuyForm = ({
     const noProviders =
         !isLoading &&
         (buyInfo?.buyInfo?.providers.length === 0 ||
-            !buyInfo?.supportedCryptoCurrencies.has(account.symbol));
+            !(
+                suiteToCryptoSymbol(account.symbol) &&
+                buyInfo?.supportedCryptoCurrencies.has(suiteToCryptoSymbol(account.symbol))
+            ));
 
     return {
         ...methods,

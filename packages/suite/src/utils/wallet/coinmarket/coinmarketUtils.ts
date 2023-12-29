@@ -4,6 +4,7 @@ import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
 
+/** @deprecated */
 const suiteToInvitySymbols: {
     suiteSymbol: string;
     invitySymbol: string;
@@ -14,6 +15,7 @@ export const buildOption = (currency: string) => ({
     label: currency.toUpperCase(),
 });
 
+/** @deprecated */
 export const invityApiSymbolToSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
     const lowercaseSymbol = symbol.toLowerCase();
@@ -21,6 +23,7 @@ export const invityApiSymbolToSymbol = (symbol?: string) => {
     return result ? result.suiteSymbol : lowercaseSymbol;
 };
 
+/** @deprecated */
 export const symbolToInvityApiSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
     const result = suiteToInvitySymbols.find(s => s.suiteSymbol === symbol.toLowerCase());
