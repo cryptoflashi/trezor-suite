@@ -9,9 +9,24 @@ import { SectionItem, TextColumn, ActionColumn } from 'src/components/suite';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataUtils from 'src/utils/suite/metadata';
-import type { PasswordEntry } from 'src/types/suite/metadata';
+import type { PasswordEntry, PasswordManagerState } from 'src/types/suite/metadata';
 import { METADATA } from 'src/actions/suite/constants';
-import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
+import {
+    selectPasswordManagerState,
+    selectSelectedProviderForPasswords,
+} from 'src/reducers/suite/metadataReducer';
+
+const PasswordManagerBody = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+`;
+
+const TagsList = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 8px;
+`;
 
 const PasswordsList = styled.div`
     display: flex;
@@ -26,12 +41,14 @@ const PasswordEntryRow = styled.div`
 
 const PasswordEntryBody = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    margin-left: 8px;
+    grid-template-columns: minmax(0, 3fr) 2fr 1fr;
 `;
 
 const PasswordEntryTitle = styled.div`
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 8px;
 `;
 
 const PasswordEntryUsername = styled.div`
@@ -48,6 +65,15 @@ const PATH = [10016 + HD_HARDENED, 0];
 const DEFAULT_KEYPHRASE = 'Activate TREZOR Password Manager?';
 const DEFAULT_NONCE =
     '2d650551248d792eabf628f451200d7f51cb63e46aadcbb1038aacb05e8c8aee2d650551248d792eabf628f451200d7f51cb63e46aadcbb1038aacb05e8c8aee';
+
+const DEFAULT_PASSWORD_MANAGER_STATE: PasswordManagerState = {
+    config: {
+        orderType: 'date',
+    },
+    entries: {},
+    extVersion: '',
+    tags: {},
+};
 
 interface PasswordEntryProps extends PasswordEntry {
     devicePath: string;
@@ -121,23 +147,15 @@ export const PasswordManager = () => {
     const [fileName, setFileName] = useState('');
     const [providerConnecting, setProviderConnecting] = useState(false);
     const [fetchingPasswords, setFetchingPasswords] = useState(false);
-
+    const [selectedTags, setSelectedTags] = useState<Record<string, boolean>>({});
     const device = useSelector(selectDevice);
     const selectedProvider = useSelector(selectSelectedProviderForPasswords);
 
     const dispatch = useDispatch();
 
-    const passwordEntries: PasswordEntry[] = (() => {
-        if (!fileName || !selectedProvider || !selectedProvider?.data?.[fileName]) {
-            return [];
-        }
-
-        const data = selectedProvider?.data![fileName];
-        if ('entries' in data) {
-            return data.entries as PasswordEntry[];
-        }
-        return [];
-    })();
+    const { entries, tags, extVersion } =
+        useSelector(state => selectPasswordManagerState(state, fileName)) ||
+        DEFAULT_PASSWORD_MANAGER_STATE;
 
     const connect = useCallback(() => {
         setFileName('');
@@ -235,15 +253,58 @@ export const PasswordManager = () => {
                 </ActionColumn>
             </SectionItem>
             <SectionItem>
-                <PasswordsList>
-                    {fetchingPasswords && <div>Fetching passwords...</div>}
-                    {Object.entries(passwordEntries).map(([key, entry]) => (
-                        <PasswordEntryComponent {...entry} devicePath={device!.path} key={key} />
-                    ))}
-                    {!Object.entries(passwordEntries).length && !fetchingPasswords && (
-                        <TextColumn description={`No passwords found in file ${fileName}`} />
-                    )}
-                </PasswordsList>
+                {fetchingPasswords ? (
+                    <div>Fetching passwords...</div>
+                ) : (
+                    <>
+                        {extVersion ? (
+                            <PasswordManagerBody>
+                                <TagsList>
+                                    {Object.entries(tags).map(([key, value]) => (
+                                        <React.Fragment key={key}>
+                                            <Button
+                                                variant="tertiary"
+                                                icon={
+                                                    selectedTags[key] ? 'CHECK_ACTIVE' : undefined
+                                                }
+                                                onClick={() => {
+                                                    setSelectedTags({
+                                                        ...selectedTags,
+                                                        [key]: !selectedTags[key],
+                                                    });
+                                                }}
+                                            >
+                                                {value.title}
+                                            </Button>
+                                            &nbsp;
+                                        </React.Fragment>
+                                    ))}
+                                </TagsList>
+                                <PasswordsList>
+                                    {(Object.values(selectedTags).some(v => v) && !selectedTags['0']
+                                        ? Object.entries(entries).filter(([_key, value]) =>
+                                              value.tags.some(tag => selectedTags[tag]),
+                                          )
+                                        : Object.entries(entries)
+                                    ).map(([key, entry]) => (
+                                        <PasswordEntryComponent
+                                            {...entry}
+                                            devicePath={device!.path}
+                                            key={key}
+                                        />
+                                    ))}
+                                    {!Object.entries(entries).length && (
+                                        <TextColumn
+                                            description={`No passwords found in file ${fileName}`}
+                                        />
+                                    )}
+                                </PasswordsList>
+                            </PasswordManagerBody>
+                        ) : (
+                            <div> no data</div>
+                        )}
+                    </>
+                )}
             </SectionItem>
         </>
     );
