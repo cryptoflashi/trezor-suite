@@ -53,14 +53,16 @@ export const connectInitThunk = createThunk(
         const synchronize = getSynchronize();
 
         const wrappedMethods = [
+            'authenticateDevice',
             'getFeatures',
             'getDeviceState',
             'getAddress',
+            'getPublicKey',
             'ethereumGetAddress',
             'rippleGetAddress',
             'cardanoGetAddress',
-            'solanaGetAddress',
             'cardanoGetPublicKey',
+            'solanaGetAddress',
             'applySettings',
             'changePin',
             'pushTransaction',
@@ -76,8 +78,12 @@ export const connectInitThunk = createThunk(
             'cancelCoinjoinAuthorization',
             'getOwnershipProof',
             'setBusy',
+            'showDeviceTutorial',
             'rebootToBootloader',
+            'resetDevice',
+            'unlockPath',
             'cipherKeyValue',
+            'wipeDevice',
         ] as const;
 
         wrappedMethods.forEach(key => {
