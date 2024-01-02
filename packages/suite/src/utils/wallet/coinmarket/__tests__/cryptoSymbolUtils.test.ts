@@ -3,6 +3,7 @@ import {
     getCryptoSymbolToken,
     isCryptoSymbolToken,
     networkToCryptoSymbol,
+    tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 describe('cryptoSymbolUtils', () => {
@@ -52,5 +53,15 @@ describe('cryptoSymbolUtils', () => {
         ['_unknown' as Parameters<typeof cryptoToNetworkSymbol>[0], undefined],
     ])('cryptoToNetworkSymbol %s', (symbol, expected) => {
         expect(cryptoToNetworkSymbol(symbol)).toEqual(expected);
+    });
+
+    it.each<[Parameters<typeof tokenToCryptoSymbol>, ReturnType<typeof tokenToCryptoSymbol>]>([
+        [['USDT', 'eth'], 'USDT@ETH'],
+        [['USDC', 'eth'], 'USDC@ETH'],
+        [['USDT', 'matic'], 'USDT@MATIC'],
+        [['USDC', 'matic'], 'USDC@MATIC'],
+        [['USDT', '_unknown' as Parameters<typeof tokenToCryptoSymbol>[1]], undefined],
+    ])('tokenToCryptoSymbol %s', (params, expected) => {
+        expect(tokenToCryptoSymbol(...params)).toEqual(expected);
     });
 });

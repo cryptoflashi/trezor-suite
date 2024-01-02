@@ -141,7 +141,9 @@ const CryptoInput = () => {
                             hideTextCursor
                             isDisabled={account.networkType !== 'ethereum'}
                             minWidth="100px"
-                            formatOptionLabel={(option: any) => (
+                            formatOptionLabel={(
+                                option: ReturnType<typeof getSendCryptoOptions>[number],
+                            ) => (
                                 <Option>
                                     {account.symbol === option.value.toLowerCase() ? (
                                         <CoinLogo size={18} symbol={account.symbol} />

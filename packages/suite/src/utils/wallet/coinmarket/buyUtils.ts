@@ -137,7 +137,7 @@ export const getCryptoOptions = (
     /** @deprecated */
     coinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'],
 ) => {
-    const options: { value: CryptoSymbol; label: string }[] = [];
+    const options: { value: string; label: string; cryptoSymbol: CryptoSymbol }[] = [];
 
     // add network coin and tokens
     supportedSymbols.forEach(symbol => {
@@ -147,7 +147,8 @@ export const getCryptoOptions = (
 
         options.push({
             label: getCryptoSymbolToken(symbol) ?? symbol,
-            value: symbol,
+            value: getCryptoSymbolToken(symbol) ?? symbol,
+            cryptoSymbol: symbol,
         });
     });
 

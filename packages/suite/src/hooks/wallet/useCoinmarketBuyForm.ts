@@ -30,7 +30,6 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { symbolToInvityApiSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
@@ -131,7 +130,7 @@ export const useCoinmarketBuyForm = ({
         const request: BuyTradeQuoteRequest = {
             wantCrypto,
             fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-            receiveCurrency: formValues.cryptoSelect.value,
+            receiveCurrency: formValues.cryptoSelect.cryptoSymbol,
             country: formValues.countrySelect.value,
             fiatStringAmount,
             cryptoStringAmount,

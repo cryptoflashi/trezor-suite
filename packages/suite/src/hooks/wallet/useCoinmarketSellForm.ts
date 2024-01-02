@@ -345,7 +345,7 @@ export const useCoinmarketSellForm = ({
         const amountInCrypto = !fiatStringAmount;
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto,
-            cryptoCurrency: formValues.cryptoCurrencySelect.value.toUpperCase(),
+            cryptoCurrency: formValues.cryptoCurrencySelect.value,
             fiatCurrency: formValues.fiatCurrencySelect.value.toUpperCase(),
             country: formValues.countrySelect.value,
             cryptoStringAmount,

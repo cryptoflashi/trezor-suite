@@ -5,9 +5,8 @@ import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
 import { CryptoSymbol } from 'invity-api';
 import {
-    cryptoToNetworkSymbol,
-    getCryptoSymbolToken,
     networkToCryptoSymbol,
+    tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 /** @deprecated */
@@ -46,9 +45,12 @@ export const getSendCryptoOptions = (
         return [];
     }
 
-    const options: { value: CryptoSymbol; label: string; token?: TokenInfo }[] = [
-        { value: cryptoSymbol, label: cryptoSymbol },
-    ];
+    const options: {
+        value: string;
+        label: string;
+        token?: TokenInfo;
+        tokenCryptoSymbol?: CryptoSymbol;
+    }[] = [{ value: cryptoSymbol, label: cryptoSymbol }];
 
     if (account.tokens) {
         account.tokens.forEach(token => {
@@ -56,8 +58,12 @@ export const getSendCryptoOptions = (
                 return;
             }
 
-            // TODO: conversion USDT => USDT@ETH
-            if (!supportedSymbols.has((token.symbol + '@' + account.symbol).toUpperCase())) {
+            const tokenCryptoSymbol = tokenToCryptoSymbol(token.symbol, account.symbol);
+            if (!tokenCryptoSymbol) {
+                return;
+            }
+
+            if (!supportedSymbols.has(tokenCryptoSymbol)) {
                 return;
             }
 
@@ -68,9 +74,10 @@ export const getSendCryptoOptions = (
             }
 
             options.push({
-                label: token.symbol,
-                value: token.symbol,
+                label: token.symbol.toUpperCase(),
+                value: token.symbol.toUpperCase(),
                 token,
+                tokenCryptoSymbol,
             });
         });
     }
@@ -102,7 +109,7 @@ export const getSendCryptoOptions = (
     return options;
 };
 
-export const getTokensFiatValue = async (account: Account, supportedCoins: Set<string>) => {
+export const getTokensFiatValue = async (account: Account, supportedCoins: Set<CryptoSymbol>) => {
     const tokensFiatValue: Record<string, number> = {};
 
     await Promise.all(
