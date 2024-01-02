@@ -12,19 +12,15 @@ import {
     removeDiscovery,
     getAvailableCardanoDerivationsThunk,
     selectDeviceByState,
+    selectSupportedNetworks,
 } from '@suite-common/wallet-core';
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType, getNetwork } from '@suite-common/wallet-utils';
+import { getDerivationType, getNetwork, isTestnet } from '@suite-common/wallet-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import {
-    supportedMainnetSymbols,
-    supportedNetworkSymbols,
-    filterBlacklistedNetworks,
-    sortNetworks,
-} from '@suite-native/config';
+import { filterBlacklistedNetworks, sortNetworks } from '@suite-native/config';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 
@@ -318,11 +314,11 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         if (!device) {
             return;
         }
-
+        const deviceSupportedNetworks = selectSupportedNetworks(getState());
         const enabledNetworks = areTestnetsEnabled
-            ? supportedNetworkSymbols
-            : supportedMainnetSymbols;
-        const deviceSupportedNetworks = sortNetworks(getAvailableNetworks(enabledNetworks, device));
+            ? deviceSupportedNetworks
+            : deviceSupportedNetworks.filter(network => !isTestnet(network));
+        const supportedNetworks = sortNetworks(getAvailableNetworks(enabledNetworks, device));
 
         // Start tracking duration for analytics purposes
         dispatch(setDiscoveryStartTimestamp(performance.now()));
@@ -330,7 +326,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         await dispatch(
             createDescriptorPreloadedDiscoveryThunk({
                 deviceState,
-                deviceSupportedNetworks,
+                deviceSupportedNetworks: supportedNetworks,
             }),
         );
 
@@ -341,7 +337,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }
 
         // Start discovery for every network account type.
-        deviceSupportedNetworks.forEach(network => {
+        supportedNetworks.forEach(network => {
             dispatch(discoverNetworkBatchThunk({ deviceState, network }));
         });
     },
