@@ -64,6 +64,7 @@ export class ServiceWorkerWindowChannel<
                     return;
                 }
 
+                // TODO: Why using `self` instead of `window`?
                 // eslint-disable-next-line no-restricted-globals
                 if (origin === self.origin) {
                     return;
@@ -76,5 +77,6 @@ export class ServiceWorkerWindowChannel<
 
     disconnect() {
         this.port?.disconnect();
+        this.clear();
     }
 }

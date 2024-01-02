@@ -33,7 +33,7 @@ export class PopupManager extends EventEmitter {
                 here: '@trezor/connect-webextension',
                 peer: '@trezor/connect-content-script',
             },
-            logger,
+            logger: this.logger,
         });
         this.channel.init();
     }

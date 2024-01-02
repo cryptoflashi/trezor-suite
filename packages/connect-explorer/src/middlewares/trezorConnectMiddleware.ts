@@ -15,10 +15,10 @@ export const trezorConnectMiddleware =
         if (action.type === ON_LOCATION_CHANGE && !prevConnectOptions) {
             console.log('Location changed!!!');
             // const connectSrc = getQueryVariable('src');
-            // const connectSrc = 'http://localhost:8088';
-            const connectSrc =
-                'https://suite.corp.sldev.cz/connect/feat/connect-explorer-serviceworker-proxy/';
-            // console.log('connectSrc in trezorConnectMiddleware', connectSrc);
+            const connectSrc = 'http://localhost:8088';
+            // const connectSrc =
+            //     'https://suite.corp.sldev.cz/connect/feat/connect-explorer-serviceworker-proxy/';
+            console.log('connectSrc in trezorConnectMiddleware', connectSrc);
             const options = {};
             if (connectSrc) {
                 Object.assign(options, { connectSrc });
