@@ -1,12 +1,13 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, Icon, useTheme, EditableText } from '@trezor/components';
+import { Button, Icon, useTheme } from '@trezor/components';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataActions';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { Translation } from 'src/components/suite';
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
+import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
 import {
     selectIsLabelingAvailableForEntity,
@@ -20,7 +21,7 @@ const LabelValue = styled.div`
 `;
 
 const LabelDefaultValue = styled(LabelValue)`
-    /* do not shrink when the expanded label does not fit the contener - shrink only the label value */
+    /* do not shrink when the expanded label does not fit the container - shrink only the label value */
     flex-shrink: 0;
     max-width: 0;
 
@@ -97,10 +98,25 @@ const LabelContainer = styled.div`
     }
 `;
 
+const RelativeButton = styled(Button)`
+    padding-bottom: 4px;
+    padding-top: 4px;
+    position: relative;
+    overflow: hidden;
+`;
+
+const RelativeLabel = styled(Label)<{ isVisible?: boolean }>`
+    position: relative;
+`;
+
 const ButtonLikeLabel = (props: ExtendedProps) => {
+    const EditableButton = useMemo(() => withEditable(RelativeButton), []);
+
     if (props.editActive) {
         return (
-            <EditableText
+            <EditableButton
+                // @ts-expect-error todo: hm this needs some clever generic
+                variant="tertiary"
                 icon="TAG"
                 data-test={props['data-test']}
                 originalValue={props.payload.value}
@@ -126,9 +142,11 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
 };
 
 const TextLikeLabel = (props: ExtendedProps) => {
+    const EditableLabel = useMemo(() => withEditable(RelativeLabel), []);
+
     if (props.editActive) {
         return (
-            <EditableText
+            <EditableLabel
                 data-test={props['data-test']}
                 originalValue={props.payload.value}
                 onSubmit={props.onSubmit}
@@ -207,7 +225,6 @@ export const MetadataLabeling = (props: Props) => {
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(props.payload.defaultValue);
     let timeout: Timeout | undefined;
-
     useEffect(() => {
         setPending(false);
         setShowSuccess(false);
