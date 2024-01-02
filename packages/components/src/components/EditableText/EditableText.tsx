@@ -1,4 +1,4 @@
-import { ReactNode, useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Icon } from '../assets/Icon/Icon';
 
@@ -16,24 +16,18 @@ const IconsWrapper = styled.div`
     display: flex;
 `;
 
-const Placeholder = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
-
 const Editable = styled.input<{
     value?: string;
     isButton?: boolean;
     touched: boolean;
-    isEditable: boolean;
 }>`
     padding-left: 1px;
     margin-right: 1px;
     text-align: left;
     cursor: text;
-    border: solid 1px ${({ isEditable }) => (isEditable ? 'gray' : 'transparent')};
+    border: none;
     outline: none;
     padding: 2px 5px;
-    border-radius: 8px;
     margin: 0;
     background-color: transparent;
 
@@ -56,16 +50,15 @@ const Editable = styled.input<{
 
 export interface EditableTextProps {
     originalValue?: string;
-    defaultVisibleValue: ReactNode;
+    defaultVisibleValue: string | undefined;
     onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
     isButton?: boolean;
+    className?: string;
 }
 
 export const EditableText = ({ onSubmit, onBlur, ...props }: EditableTextProps) => {
     const [touched, setTouched] = useState(false);
-    const [isEditable, setIsEditable] = useState(false);
-    // // value is used to mirror divRef.current.textContent so that its changes force react to render
     const [value, setValue] = useState('');
 
     const theme = useTheme();
@@ -83,90 +76,72 @@ export const EditableText = ({ onSubmit, onBlur, ...props }: EditableTextProps) 
         [props, onSubmit, onBlur],
     );
 
-    const handleOnTextClick = () => {
-        setIsEditable(true);
-
-        if (divRef.current) {
-            console.log('____FOCUS');
-            divRef.current.focus();
-            divRef.current.select();
-        }
-    };
-
     useEffect(() => {
-        // Set value of content editable element; set caret to correct position;
-
         if (!divRef?.current || touched) {
             return;
         }
 
         if (props.originalValue) {
-            divRef.current.textContent = props.originalValue;
             setValue(props.originalValue);
         }
-
-        divRef.current.focus();
     }, [props.originalValue, divRef, touched, setValue]);
+
+    useEffect(() => {
+        if (!touched) {
+            // divRef.current?.focus();
+            divRef.current?.select();
+        }
+    }, [value, touched]);
 
     return (
         <>
-            {/* <WrappedComponent {...props}> */}
             <Editable
-                isEditable={isEditable}
-                // onKeyPress={e => setValue(e.key)}
-                // onKeyUp={() => {
-                //     if (!divRef.current?.textContent) {
-                //         setValue('');
-                //     }
-                // }}
-                // onBlur={() => !value && onBlur()}
-                // onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
                 ref={divRef}
                 data-test="@metadata/input"
                 touched={touched}
                 value={value}
                 isButton={props.isButton}
-                onClick={handleOnTextClick}
-                onChange={e => {
-                    setValue(e.target.value);
+                className={props.className}
+                onChange={event => {
+                    setTouched(true);
+                    setValue(event.target.value);
                 }}
-                placeholder={props.defaultVisibleValue}
+                onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                        submit(value);
+                    }
+                }}
             />
-            {/* </WrappedComponent> */}
 
-            {isEditable && (
-                <IconsWrapper>
-                    <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
-                        <Icon
-                            useCursorPointer
-                            size={14}
-                            data-test="@metadata/submit"
-                            icon="CHECK"
-                            onClick={e => {
-                                setIsEditable(false);
-                                e.stopPropagation();
-                                submit(divRef?.current?.textContent);
-                            }}
-                            color={theme.iconPrimaryDefault}
-                        />
-                    </IconWrapper>
+            <IconsWrapper>
+                <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
+                    <Icon
+                        useCursorPointer
+                        size={14}
+                        data-test="@metadata/submit"
+                        icon="CHECK"
+                        onClick={e => {
+                            e.stopPropagation();
+                            submit(value);
+                        }}
+                        color={theme.iconPrimaryDefault}
+                    />
+                </IconWrapper>
 
-                    <IconWrapper bgColor={theme.BG_GREY}>
-                        <Icon
-                            useCursorPointer
-                            size={14}
-                            data-test="@metadata/cancel"
-                            icon="CROSS"
-                            onClick={e => {
-                                setIsEditable(false);
-                                e.stopPropagation();
-                                onBlur();
-                            }}
-                            color={theme.TYPE_DARK_GREY}
-                        />
-                    </IconWrapper>
-                </IconsWrapper>
-            )}
+                <IconWrapper bgColor={theme.BG_GREY}>
+                    <Icon
+                        useCursorPointer
+                        size={14}
+                        data-test="@metadata/cancel"
+                        icon="CROSS"
+                        onClick={e => {
+                            e.stopPropagation();
+                            onBlur();
+                        }}
+                        color={theme.TYPE_DARK_GREY}
+                    />
+                </IconWrapper>
+            </IconsWrapper>
         </>
     );
 };
