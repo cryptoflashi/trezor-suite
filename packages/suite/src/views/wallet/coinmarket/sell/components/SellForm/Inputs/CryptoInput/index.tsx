@@ -26,6 +26,7 @@ import {
     validateLimits,
     validateMin,
 } from 'src/utils/suite/validation';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Option = styled.div`
     display: flex;
@@ -63,10 +64,11 @@ const CryptoInput = () => {
 
     const { translationString } = useTranslation();
 
-    const uppercaseSymbol = account.symbol.toUpperCase();
+    const cryptoSymbol = networkToCryptoSymbol(account.symbol)!;
     const cryptoOption = {
-        value: uppercaseSymbol,
-        label: uppercaseSymbol,
+        value: cryptoSymbol,
+        label: cryptoSymbol,
+        cryptoSymbol,
     };
 
     const { tokens } = account;

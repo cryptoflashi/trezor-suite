@@ -1,19 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from 'src/types/wallet';
-import { AppState } from 'src/types/suite';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus, CryptoSymbol } from 'invity-api';
-import { invityApiSymbolToSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 import {
-    SimpleSymbolV1,
     cryptoToNetworkSymbol,
-    getCryptoSymbolToken,
-    isCryptoSymbolToken,
-    simpleToCryptoSymbol,
+    cryptoToTokenSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { networks } from '@suite-common/wallet-config';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
@@ -131,11 +125,7 @@ export const getStatusMessage = (status: BuyTradeStatus) => {
 
 export const getCryptoOptions = (
     networkSymbol: Account['symbol'],
-    /** @deprecated */
-    networkType: Account['networkType'],
     supportedSymbols: Set<CryptoSymbol>,
-    /** @deprecated */
-    coinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'],
 ) => {
     const options: { value: string; label: string; cryptoSymbol: CryptoSymbol }[] = [];
 
@@ -145,24 +135,17 @@ export const getCryptoOptions = (
             return;
         }
 
+        const tokenSymbol = cryptoToTokenSymbol(symbol);
+        if (!tokenSymbol) {
+            return;
+        }
+
         options.push({
-            label: getCryptoSymbolToken(symbol) ?? symbol,
-            value: getCryptoSymbolToken(symbol) ?? symbol,
+            label: tokenSymbol,
+            value: tokenSymbol,
             cryptoSymbol: symbol,
         });
     });
-
-    /* coinInfo?.forEach(coin => {
-            if (coin.category === 'Ethereum ERC20 tokens') {
-                const ticker = simpleToCryptoSymbol(coin.ticker as SimpleSymbolV1);
-                if (supportedCoins.has(ticker)) {
-                    options.push({
-                        label: invityApiSymbolToSymbol(ticker).toUpperCase(),
-                        value: coin.ticker,
-                    });
-                }
-            }
-        }); */
 
     return options;
 };

@@ -1,6 +1,6 @@
 import {
     cryptoToNetworkSymbol,
-    getCryptoSymbolToken,
+    cryptoToTokenSymbol,
     isCryptoSymbolToken,
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
@@ -14,19 +14,19 @@ describe('cryptoSymbolUtils', () => {
         ['USDT@ETH', true],
         ['USDC@ETH', true],
         ['_unknown' as Parameters<typeof isCryptoSymbolToken>[0], false],
-    ])('isCryptoSymbolToken %s', (symbol, expected) => {
+    ])(`${isCryptoSymbolToken.name} %s`, (symbol, expected) => {
         expect(isCryptoSymbolToken(symbol)).toEqual(expected);
     });
 
-    it.each<[Parameters<typeof getCryptoSymbolToken>[0], ReturnType<typeof getCryptoSymbolToken>]>([
+    it.each<[Parameters<typeof cryptoToTokenSymbol>[0], ReturnType<typeof cryptoToTokenSymbol>]>([
         ['BTC', undefined],
         ['ETH', undefined],
         ['XRP', undefined],
         ['USDT@ETH', 'USDT'],
         ['USDC@ETH', 'USDC'],
-        ['_unknown' as Parameters<typeof getCryptoSymbolToken>[0], undefined],
-    ])('getCryptoSymbolToken %s', (symbol, expected) => {
-        expect(getCryptoSymbolToken(symbol)).toEqual(expected);
+        ['_unknown' as Parameters<typeof cryptoToTokenSymbol>[0], undefined],
+    ])(`${cryptoToTokenSymbol.name} %s`, (symbol, expected) => {
+        expect(cryptoToTokenSymbol(symbol)).toEqual(expected);
     });
 
     it.each<
@@ -36,7 +36,7 @@ describe('cryptoSymbolUtils', () => {
         ['eth', 'ETH'],
         ['xrp', 'XRP'],
         ['_unknown' as Parameters<typeof networkToCryptoSymbol>[0], undefined],
-    ])('networkToCryptoSymbol %s', (symbol, expected) => {
+    ])(`${networkToCryptoSymbol.name} %s`, (symbol, expected) => {
         expect(networkToCryptoSymbol(symbol)).toEqual(expected);
     });
 
@@ -51,7 +51,7 @@ describe('cryptoSymbolUtils', () => {
         ['USDT@MATIC', 'matic'],
         ['USDC@MATIC', 'matic'],
         ['_unknown' as Parameters<typeof cryptoToNetworkSymbol>[0], undefined],
-    ])('cryptoToNetworkSymbol %s', (symbol, expected) => {
+    ])(`${cryptoToNetworkSymbol.name} %s`, (symbol, expected) => {
         expect(cryptoToNetworkSymbol(symbol)).toEqual(expected);
     });
 
@@ -61,7 +61,7 @@ describe('cryptoSymbolUtils', () => {
         [['USDT', 'matic'], 'USDT@MATIC'],
         [['USDC', 'matic'], 'USDC@MATIC'],
         [['USDT', '_unknown' as Parameters<typeof tokenToCryptoSymbol>[1]], undefined],
-    ])('tokenToCryptoSymbol %s', (params, expected) => {
+    ])(`${tokenToCryptoSymbol.name} %s`, (params, expected) => {
         expect(tokenToCryptoSymbol(...params)).toEqual(expected);
     });
 });

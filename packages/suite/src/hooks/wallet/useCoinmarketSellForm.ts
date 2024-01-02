@@ -234,7 +234,7 @@ export const useCoinmarketSellForm = ({
         sellInfo?.sellList?.providers.length === 0 ||
         !(
             networkToCryptoSymbol(account.symbol) &&
-            sellInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol))
+            sellInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol)!)
         );
 
     // sub-hook, FeeLevels handler
@@ -345,7 +345,7 @@ export const useCoinmarketSellForm = ({
         const amountInCrypto = !fiatStringAmount;
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto,
-            cryptoCurrency: formValues.cryptoCurrencySelect.value,
+            cryptoCurrency: formValues.cryptoCurrencySelect.cryptoSymbol,
             fiatCurrency: formValues.fiatCurrencySelect.value.toUpperCase(),
             country: formValues.countrySelect.value,
             cryptoStringAmount,

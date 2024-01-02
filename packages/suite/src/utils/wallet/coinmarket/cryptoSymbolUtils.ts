@@ -30,7 +30,7 @@ export function isCryptoSymbolToken(cryptoSymbol: CryptoSymbol): boolean {
     return cryptoSymbol.indexOf('@') >= 0;
 }
 
-export function getCryptoSymbolToken(cryptoSymbol: CryptoSymbol): string | undefined {
+export function cryptoToTokenSymbol(cryptoSymbol: CryptoSymbol): string | undefined {
     return isCryptoSymbolToken(cryptoSymbol) ? cryptoSymbol.split('@')[0] : undefined;
 }
 

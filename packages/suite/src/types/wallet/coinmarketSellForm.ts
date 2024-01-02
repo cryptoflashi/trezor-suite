@@ -2,7 +2,7 @@ import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network, CoinFiatRates } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
-import type { ExchangeCoinInfo } from 'invity-api';
+import type { CryptoSymbol, ExchangeCoinInfo } from 'invity-api';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type {
     FeeInfo,
@@ -29,7 +29,9 @@ export interface SellFormState extends FormState {
     fiatInput?: string;
     fiatCurrencySelect: Option;
     cryptoInput?: string;
-    cryptoCurrencySelect: Option;
+    cryptoCurrencySelect: Option & {
+        cryptoSymbol: CryptoSymbol;
+    };
     countrySelect: Option;
 }
 

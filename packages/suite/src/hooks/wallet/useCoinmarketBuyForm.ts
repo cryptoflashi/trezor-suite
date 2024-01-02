@@ -159,7 +159,7 @@ export const useCoinmarketBuyForm = ({
         (buyInfo?.buyInfo?.providers.length === 0 ||
             !(
                 networkToCryptoSymbol(account.symbol) &&
-                buyInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol))
+                buyInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol)!)
             ));
 
     return {

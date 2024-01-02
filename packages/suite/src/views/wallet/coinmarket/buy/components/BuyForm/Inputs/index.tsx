@@ -20,7 +20,7 @@ import {
     validateLimits,
     validateMin,
 } from 'src/utils/suite/validation';
-import { getCryptoSymbolToken } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Option = styled.div`
     display: flex;
@@ -53,13 +53,11 @@ const Inputs = () => {
         defaultCurrency,
         cryptoInputValue,
         getValues,
-        exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { CryptoAmountFormatter } = useFormatters();
 
-    const { symbol } = account;
-    const uppercaseSymbol = symbol.toUpperCase();
+    const cryptoSymbol = networkToCryptoSymbol(account.symbol)!;
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
@@ -173,8 +171,9 @@ const Inputs = () => {
                             control={control}
                             name={cryptoSelect}
                             defaultValue={{
-                                value: uppercaseSymbol,
-                                label: uppercaseSymbol,
+                                value: cryptoSymbol,
+                                label: cryptoSymbol,
+                                cryptoSymbol,
                             }}
                             render={({ field: { onChange, value } }) => (
                                 <Select
@@ -187,9 +186,7 @@ const Inputs = () => {
                                     data-test="@coinmarket/buy/crypto-currency-select"
                                     options={getCryptoOptions(
                                         account.symbol,
-                                        account.networkType,
                                         buyInfo?.supportedCryptoCurrencies || new Set(),
-                                        exchangeCoinInfo,
                                     )}
                                     formatOptionLabel={(
                                         option: ReturnType<typeof getCryptoOptions>[number],

@@ -49,8 +49,8 @@ export const getSendCryptoOptions = (
         value: string;
         label: string;
         token?: TokenInfo;
-        tokenCryptoSymbol?: CryptoSymbol;
-    }[] = [{ value: cryptoSymbol, label: cryptoSymbol }];
+        cryptoSymbol: CryptoSymbol;
+    }[] = [{ value: cryptoSymbol, label: cryptoSymbol, cryptoSymbol }];
 
     if (account.tokens) {
         account.tokens.forEach(token => {
@@ -77,7 +77,7 @@ export const getSendCryptoOptions = (
                 label: token.symbol.toUpperCase(),
                 value: token.symbol.toUpperCase(),
                 token,
-                tokenCryptoSymbol,
+                cryptoSymbol: tokenCryptoSymbol,
             });
         });
     }
