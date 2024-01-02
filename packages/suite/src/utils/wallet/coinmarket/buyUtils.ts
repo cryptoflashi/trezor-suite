@@ -8,8 +8,12 @@ import { invityApiSymbolToSymbol } from 'src/utils/wallet/coinmarket/coinmarketU
 import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 import {
     SimpleSymbolV1,
+    cryptoToNetworkSymbol,
+    getCryptoSymbolToken,
+    isCryptoSymbolToken,
     simpleToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { networks } from '@suite-common/wallet-config';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
@@ -126,26 +130,28 @@ export const getStatusMessage = (status: BuyTradeStatus) => {
 };
 
 export const getCryptoOptions = (
-    symbol: Account['symbol'],
+    networkSymbol: Account['symbol'],
+    /** @deprecated */
     networkType: Account['networkType'],
-    supportedCoins: Set<CryptoSymbol>,
+    supportedSymbols: Set<CryptoSymbol>,
     /** @deprecated */
     coinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'],
 ) => {
-    const uppercaseSymbol = symbol.toUpperCase();
-    const options: { value: string; label: string }[] = [
-        { value: uppercaseSymbol, label: uppercaseSymbol },
-    ];
+    const options: { value: CryptoSymbol; label: string }[] = [];
 
-    if (networkType === 'ethereum') {
-        // cycle through all coins, locate ERC20 tokens and if it is in supportedCoins, add it as option
-        supportedCoins.forEach(coin => {
-            options.push({
-                label: coin,
-                value: coin,
-            });
+    // add network coin and tokens
+    supportedSymbols.forEach(symbol => {
+        if (cryptoToNetworkSymbol(symbol) !== networkSymbol) {
+            return;
+        }
+
+        options.push({
+            label: getCryptoSymbolToken(symbol) ?? symbol,
+            value: symbol,
         });
-        /* coinInfo?.forEach(coin => {
+    });
+
+    /* coinInfo?.forEach(coin => {
             if (coin.category === 'Ethereum ERC20 tokens') {
                 const ticker = simpleToCryptoSymbol(coin.ticker as SimpleSymbolV1);
                 if (supportedCoins.has(ticker)) {
@@ -156,7 +162,6 @@ export const getCryptoOptions = (
                 }
             }
         }); */
-    }
 
     return options;
 };

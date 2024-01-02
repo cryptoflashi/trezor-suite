@@ -3,6 +3,12 @@ import { NETWORKS } from 'src/config/wallet';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
+import { CryptoSymbol } from 'invity-api';
+import {
+    cryptoToNetworkSymbol,
+    getCryptoSymbolToken,
+    networkToCryptoSymbol,
+} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -32,22 +38,51 @@ export const symbolToInvityApiSymbol = (symbol?: string) => {
 
 export const getSendCryptoOptions = (
     account: Account,
-    supportedCoins: Set<string>,
+    supportedSymbols: Set<CryptoSymbol>,
     tokensFiatValue?: Record<string, number>,
 ) => {
-    const uppercaseSymbol = account.symbol.toUpperCase();
-    const options: { value: string; label: string; token?: TokenInfo }[] = [
-        { value: uppercaseSymbol, label: uppercaseSymbol },
+    const cryptoSymbol = networkToCryptoSymbol(account.symbol);
+    if (!cryptoSymbol) {
+        return [];
+    }
+
+    const options: { value: CryptoSymbol; label: string; token?: TokenInfo }[] = [
+        { value: cryptoSymbol, label: cryptoSymbol },
     ];
 
-    if (account.networkType === 'ethereum' && account.tokens) {
+    if (account.tokens) {
+        account.tokens.forEach(token => {
+            if (!token.symbol) {
+                return;
+            }
+
+            // TODO: conversion USDT => USDT@ETH
+            if (!supportedSymbols.has((token.symbol + '@' + account.symbol).toUpperCase())) {
+                return;
+            }
+
+            // exclude zero value tokens
+            const isZeroValueToken = tokensFiatValue && tokensFiatValue[token.contract] === 0;
+            if (isZeroValueToken) {
+                return;
+            }
+
+            options.push({
+                label: token.symbol,
+                value: token.symbol,
+                token,
+            });
+        });
+    }
+
+    /* if (account.networkType === 'ethereum' && account.tokens) {
         account.tokens.forEach(token => {
             if (!token.symbol) {
                 return;
             }
 
             const invityToken = symbolToInvityApiSymbol(token.symbol);
-            if (!supportedCoins.has(invityToken)) {
+            if (!supportedSymbols.has(invityToken)) {
                 return;
             }
 
@@ -62,7 +97,7 @@ export const getSendCryptoOptions = (
                 token,
             });
         });
-    }
+    } */
 
     return options;
 };

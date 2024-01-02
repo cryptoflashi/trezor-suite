@@ -1,7 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoSymbol } from 'invity-api';
 
-const suiteToCryptoSymbols: Partial<Record<NetworkSymbol, CryptoSymbol>> = {
+const networkToCryptoSymbols: Partial<Record<NetworkSymbol, CryptoSymbol>> = {
     btc: 'BTC',
     ltc: 'LTC',
     eth: 'ETH',
@@ -19,17 +19,26 @@ const suiteToCryptoSymbols: Partial<Record<NetworkSymbol, CryptoSymbol>> = {
     matic: 'MATIC',
 };
 
-const cryptoToSuiteSymbols: Partial<Record<CryptoSymbol, NetworkSymbol>> = {};
-Object.keys(suiteToCryptoSymbols).forEach(
+const cryptoToNetworkSymbols: Partial<Record<CryptoSymbol, NetworkSymbol>> = {};
+Object.keys(networkToCryptoSymbols).forEach(
     key =>
-        (cryptoToSuiteSymbols[suiteToCryptoSymbols[key as NetworkSymbol] as CryptoSymbol] =
+        (cryptoToNetworkSymbols[networkToCryptoSymbols[key as NetworkSymbol] as CryptoSymbol] =
             key as NetworkSymbol),
 );
 
-export function suiteToCryptoSymbol(suiteSymbol: NetworkSymbol): CryptoSymbol | undefined {
-    return suiteToCryptoSymbols[suiteSymbol];
+export function isCryptoSymbolToken(cryptoSymbol: CryptoSymbol): boolean {
+    return cryptoSymbol.indexOf('@') >= 0;
 }
 
-export function cryptoToSuiteSymbol(cryptoSymbol: CryptoSymbol): NetworkSymbol | undefined {
-    return cryptoToSuiteSymbols[cryptoSymbol];
+export function getCryptoSymbolToken(cryptoSymbol: CryptoSymbol): string | undefined {
+    return isCryptoSymbolToken(cryptoSymbol) ? cryptoSymbol.split('@')[0] : undefined;
+}
+
+export function networkToCryptoSymbol(networkSymbol: NetworkSymbol): CryptoSymbol | undefined {
+    return networkToCryptoSymbols[networkSymbol];
+}
+
+export function cryptoToNetworkSymbol(cryptoSymbol: CryptoSymbol): NetworkSymbol | undefined {
+    const network = isCryptoSymbolToken(cryptoSymbol) ? cryptoSymbol.split('@')[1] : cryptoSymbol;
+    return cryptoToNetworkSymbols[network as CryptoSymbol];
 }

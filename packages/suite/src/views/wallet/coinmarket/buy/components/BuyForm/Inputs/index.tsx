@@ -20,6 +20,7 @@ import {
     validateLimits,
     validateMin,
 } from 'src/utils/suite/validation';
+import { getCryptoSymbolToken } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 const Option = styled.div`
     display: flex;
@@ -190,15 +191,17 @@ const Inputs = () => {
                                         buyInfo?.supportedCryptoCurrencies || new Set(),
                                         exchangeCoinInfo,
                                     )}
-                                    formatOptionLabel={(option: any) => (
+                                    formatOptionLabel={(
+                                        option: ReturnType<typeof getCryptoOptions>[number],
+                                    ) => (
                                         <Option>
                                             {account.symbol.toUpperCase() === option.value ? (
                                                 <CoinLogo size={18} symbol={account.symbol} />
                                             ) : (
                                                 <TokenLogo
-                                                    src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${
-                                                        option.value
-                                                    }.svg`}
+                                                    src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${getCryptoSymbolToken(
+                                                        option.value,
+                                                    )}.svg`}
                                                 />
                                             )}
                                             <Label>{shouldSendInSats ? 'sat' : option.label}</Label>

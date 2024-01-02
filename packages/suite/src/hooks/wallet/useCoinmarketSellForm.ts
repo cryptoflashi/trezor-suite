@@ -50,6 +50,7 @@ import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefau
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
 import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -231,7 +232,10 @@ export const useCoinmarketSellForm = ({
     const isLoading = !sellInfo?.sellList || !state?.formValues?.outputs[0].address;
     const noProviders =
         sellInfo?.sellList?.providers.length === 0 ||
-        !sellInfo?.supportedCryptoCurrencies.has(account.symbol);
+        !(
+            networkToCryptoSymbol(account.symbol) &&
+            sellInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol))
+        );
 
     // sub-hook, FeeLevels handler
     const { changeFeeLevel, selectedFee } = useFees({
