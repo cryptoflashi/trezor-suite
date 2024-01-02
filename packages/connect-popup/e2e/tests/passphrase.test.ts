@@ -105,6 +105,8 @@ test('input passphrase in popup and device accepts it', async ({ page }) => {
 });
 
 test('introduce passphrase in popup and device rejects it', async ({ page }) => {
+    log('start', test.info().title);
+
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -140,6 +142,8 @@ test('introduce passphrase in popup and device rejects it', async ({ page }) => 
 });
 
 test('introduce passphrase successfully next time should not ask for it', async ({ page }) => {
+    log('start', test.info().title);
+
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -191,6 +195,8 @@ test('introduce passphrase successfully next time should not ask for it', async 
 test('introduce passphrase successfully reload 3rd party it should ask again for passphrase', async ({
     page,
 }) => {
+    log('start', test.info().title);
+
     const { explorerPage, exploreUrl, browserContext } = await getContexts(
         page,
         url,
@@ -243,6 +249,8 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 });
 
 test('passphrase mismatch', async ({ page }) => {
+    log('start', test.info().title);
+
     if (isWebExtension) {
         // This test uses addScriptTag so we cannot run it in web extension.
         test.skip();
