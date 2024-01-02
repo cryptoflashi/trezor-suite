@@ -72,7 +72,7 @@ export const withEditable =
     (WrappedComponent: FunctionComponent<PropsWithChildren>) =>
     ({ onSubmit, onBlur, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
-        // value is used to mirror divRef.current.textContent so that its changes force react to render
+        // // value is used to mirror divRef.current.textContent so that its changes force react to render
         const [value, setValue] = useState('');
 
         const theme = useTheme();
@@ -84,11 +84,7 @@ export const withEditable =
                     return onBlur();
                 }
 
-                if (!value) {
-                    value = '';
-                }
-
-                onSubmit(value);
+                onSubmit(value ?? '');
                 onBlur();
             },
             [props, onSubmit, onBlur],
@@ -96,6 +92,7 @@ export const withEditable =
 
         useEffect(() => {
             // Set value of content editable element; set caret to correct position;
+
             if (!divRef?.current || touched) {
                 return;
             }
@@ -108,71 +105,74 @@ export const withEditable =
             divRef.current.focus();
         }, [props.originalValue, divRef, touched, setValue]);
 
-        useEffect(() => {
-            const keyboardHandler = (event: KeyboardEvent) => {
-                event.stopPropagation();
+        // useEffect(() => {
+        //     const keyboardHandler = (event: KeyboardEvent) => {
+        //         event.stopPropagation();
 
-                switch (event.code) {
-                    case KEYBOARD_CODE.BACK_SPACE:
-                        if (!touched && divRef?.current) {
-                            divRef.current.textContent = '';
-                        }
+        //         switch (event.code) {
+        //             case KEYBOARD_CODE.BACK_SPACE:
+        //                 if (!touched && divRef?.current) {
+        //                     divRef.current.textContent = '';
+        //                 }
 
-                        break;
-                    case KEYBOARD_CODE.ENTER:
-                    case KEYBOARD_CODE.NUMPAD_ENTER:
-                        submit(divRef?.current?.textContent);
-                        break;
-                    case KEYBOARD_CODE.ESCAPE:
-                        onBlur();
-                        break;
-                    case KEYBOARD_CODE.ARROW_RIGHT:
-                    case KEYBOARD_CODE.TAB: {
-                        event.preventDefault();
-                        if (divRef?.current) {
-                            moveCaretToEndOfContentEditable(divRef.current);
-                            setTouched(true);
-                        }
+        //                 break;
+        //             case KEYBOARD_CODE.ENTER:
+        //             case KEYBOARD_CODE.NUMPAD_ENTER:
+        //                 submit(divRef?.current?.textContent);
+        //                 break;
+        //             case KEYBOARD_CODE.ESCAPE:
+        //                 onBlur();
+        //                 break;
+        //             case KEYBOARD_CODE.ARROW_RIGHT:
+        //             case KEYBOARD_CODE.TAB: {
+        //                 event.preventDefault();
+        //                 if (divRef?.current) {
+        //                     moveCaretToEndOfContentEditable(divRef.current);
+        //                     setTouched(true);
+        //                 }
 
-                        break;
-                    }
-                    default:
-                        // any other button, just set input to "touched"
-                        if (!touched && divRef?.current) {
-                            divRef.current.textContent = '';
-                            setTouched(true);
-                        }
-                }
-            };
+        //                 break;
+        //             }
+        //             default:
+        //                 // any other button, just set input to "touched"
+        //                 if (!touched && divRef?.current) {
+        //                     divRef.current.textContent = '';
+        //                     setTouched(true);
+        //                 }
+        //         }
+        //     };
 
-            window.addEventListener('keydown', keyboardHandler, false);
+        //     window.addEventListener('keydown', keyboardHandler, false);
 
-            return () => {
-                window.removeEventListener('keydown', keyboardHandler, false);
-            };
-        }, [submit, onBlur, props.originalValue, divRef, touched]);
+        //     return () => {
+        //         window.removeEventListener('keydown', keyboardHandler, false);
+        //     };
+        // }, [submit, onBlur, props.originalValue, divRef, touched]);
 
         return (
             <>
                 <WrappedComponent {...props}>
                     <Editable
                         contentEditable
-                        onKeyPress={e => setValue(e.key)}
-                        onKeyUp={() => {
-                            if (!divRef.current?.textContent) {
-                                setValue('');
-                            }
-                        }}
-                        onBlur={() => !value && onBlur()}
-                        onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
-                        ref={divRef}
+                        // onKeyPress={e => setValue(e.key)}
+                        // onKeyUp={() => {
+                        //     if (!divRef.current?.textContent) {
+                        //         setValue('');
+                        //     }
+                        // }}
+                        // onBlur={() => !value && onBlur()}
+                        // onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
+                        // ref={divRef}
                         data-test="@metadata/input"
                         touched={touched}
                         value={value}
                         isButton={props.isButton}
-                    />
-                    {/* show default placeholder */}
-                    {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
+                        onChange={e => {
+                            setValue(e.currentTarget.innerHTML);
+                        }}
+                    >
+                        {value ?? <Placeholder>{props.defaultVisibleValue}</Placeholder>}
+                    </Editable>
                 </WrappedComponent>
 
                 <IconsWrapper>
