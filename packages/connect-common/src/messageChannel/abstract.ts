@@ -72,8 +72,10 @@ export abstract class AbstractMessageChannel<
      * initiates handshake sequence with peer. resolves after communication with peer is established
      */
     public init() {
-        this.handshakeFinished = createDeferred();
-        this.handshakeWithPeer();
+        if (!this.handshakeFinished) {
+            this.handshakeFinished = createDeferred();
+            this.handshakeWithPeer();
+        }
         return this.handshakeFinished.promise;
     }
 
@@ -182,5 +184,9 @@ export abstract class AbstractMessageChannel<
         }
 
         return this.messagePromises[message.id].promise;
+    }
+
+    clear() {
+        this.handshakeFinished = undefined;
     }
 }
