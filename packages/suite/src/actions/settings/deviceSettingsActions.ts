@@ -77,7 +77,11 @@ export const changeWipeCode =
         });
         if (result.success) {
             if (!skipSuccessToast) {
-                dispatch(notificationsActions.addToast({ type: 'wipe-code-changed' }));
+                if (params.remove) {
+                    dispatch(notificationsActions.addToast({ type: 'wipe-code-removed' }));
+                } else {
+                    dispatch(notificationsActions.addToast({ type: 'wipe-code-changed' }));
+                }
             }
         } else if (result.payload.code === 'Failure_WipeCodeMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
